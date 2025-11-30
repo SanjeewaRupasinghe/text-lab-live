@@ -9,8 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeftRight, Copy, Download } from "lucide-react";
 import { toast } from "sonner";
+import { FAQ } from "@/components/FAQ";
+import { FaqType } from "@/types/faq.type";
+import { csvJsonConverterFaqs } from "@/data/faq/conversion-tool-faq";
 
 const CsvJsonConverter = () => {
+  // States
   const [csvInput, setCsvInput] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [delimiter, setDelimiter] = useState(",");
@@ -21,40 +25,50 @@ const CsvJsonConverter = () => {
 
   const parseCsv = (csv: string): any[] => {
     const lines = csv.trim().split('\n');
+    // Validate
     if (lines.length === 0) return [];
 
     const parseRow = (row: string): string[] => {
+      // Variables
       const result: string[] = [];
       let current = '';
       let inQuotes = false;
 
+      // Loop
       for (let i = 0; i < row.length; i++) {
         const char = row[i];
         
         if (char === '"') {
           if (inQuotes && row[i + 1] === '"') {
+            // Append
             current += '"';
             i++;
           } else {
+            // Toggle
             inQuotes = !inQuotes;
           }
         } else if (char === delimiter && !inQuotes) {
+          // Push
           result.push(current.trim());
           current = '';
         } else {
+          // Append
           current += char;
         }
       }
       
+      // Push
       result.push(current.trim());
       return result;
     };
 
+    // Parse
     const rows = lines.map(parseRow);
-    
+
     if (hasHeaders && rows.length > 0) {
       const headers = rows[0];
       return rows.slice(1).map(row => {
+        // With headers
         const obj: any = {};
         headers.forEach((header, idx) => {
           obj[header] = row[idx] || '';
@@ -62,6 +76,7 @@ const CsvJsonConverter = () => {
         return obj;
       });
     } else {
+      // Without headers
       return rows.map(row => {
         const obj: any = {};
         row.forEach((value, idx) => {
@@ -72,42 +87,52 @@ const CsvJsonConverter = () => {
     }
   };
 
+  // Convert to JSON
   const convertCsvToJson = () => {
     try {
+      // Validate
       if (!csvInput.trim()) {
         setError("Please enter CSV data");
         setOutput("");
         return;
       }
 
+      // Parse
       const data = parseCsv(csvInput);
       const json = prettyPrint 
         ? JSON.stringify(data, null, 2)
         : JSON.stringify(data);
       
+      // Set
       setOutput(json);
       setError("");
       toast.success("Converted to JSON");
     } catch (e) {
+      // Error
       setError(e instanceof Error ? e.message : "Failed to parse CSV");
       setOutput("");
     }
   };
 
+  // Convert to CSV
   const convertJsonToCsv = () => {
     try {
+      // Validate
       if (!jsonInput.trim()) {
         setError("Please enter JSON data");
         setOutput("");
         return;
       }
 
+      // Parse
       const data = JSON.parse(jsonInput);
       
+      // Validate
       if (!Array.isArray(data)) {
         throw new Error("JSON must be an array of objects");
       }
 
+      // Validate
       if (data.length === 0) {
         setOutput("");
         setError("");
@@ -119,6 +144,7 @@ const CsvJsonConverter = () => {
         new Set(data.flatMap(obj => Object.keys(obj)))
       );
 
+      // Escape value
       const escapeValue = (value: any): string => {
         const str = String(value ?? '');
         if (str.includes(delimiter) || str.includes('"') || str.includes('\n')) {
@@ -133,24 +159,29 @@ const CsvJsonConverter = () => {
         csv += keys.map(escapeValue).join(delimiter) + '\n';
       }
 
+      // Add rows
       csv += data.map(row => 
         keys.map(key => escapeValue(row[key])).join(delimiter)
       ).join('\n');
 
+      // Set
       setOutput(csv);
       setError("");
       toast.success("Converted to CSV");
     } catch (e) {
+      // Error
       setError(e instanceof Error ? e.message : "Failed to parse JSON");
       setOutput("");
     }
   };
 
+  // Copy output
   const copyOutput = () => {
     navigator.clipboard.writeText(output);
     toast.success("Copied to clipboard");
   };
 
+  // Download output
   const downloadOutput = (filename: string) => {
     const blob = new Blob([output], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -161,6 +192,9 @@ const CsvJsonConverter = () => {
     URL.revokeObjectURL(url);
     toast.success("Downloaded");
   };
+
+  // FAQs
+  const faqs: FaqType[] = csvJsonConverterFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
@@ -181,6 +215,7 @@ const CsvJsonConverter = () => {
               <div className="space-y-4">
                 {/* Options */}
                 <div className="flex flex-wrap gap-6 p-4 bg-muted rounded-lg">
+                  {/* Delimiter */}
                   <div className="flex items-center gap-2">
                     <Label htmlFor="csv-delimiter" className="text-sm whitespace-nowrap">
                       Delimiter:
@@ -193,6 +228,9 @@ const CsvJsonConverter = () => {
                       maxLength={1}
                     />
                   </div>
+                  {/* END Delimiter */}
+
+                  {/* Has Headers */}
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="csv-has-headers"
@@ -203,6 +241,9 @@ const CsvJsonConverter = () => {
                       First row is header
                     </Label>
                   </div>
+                  {/* END Has Headers */}
+
+                  {/* Pretty Print */}
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="csv-pretty-print"
@@ -213,6 +254,7 @@ const CsvJsonConverter = () => {
                       Pretty print JSON
                     </Label>
                   </div>
+                  {/* END Pretty Print */}
                 </div>
 
                 {/* Input */}
@@ -240,6 +282,7 @@ const CsvJsonConverter = () => {
                 {/* Options */}
                 <div className="flex flex-wrap gap-6 p-4 bg-muted rounded-lg">
                   <div className="flex items-center gap-2">
+                    {/* Delimiter */}
                     <Label htmlFor="json-delimiter" className="text-sm whitespace-nowrap">
                       Delimiter:
                     </Label>
@@ -251,6 +294,9 @@ const CsvJsonConverter = () => {
                       maxLength={1}
                     />
                   </div>
+                  {/* END Delimiter */}
+
+                  {/* Has Headers */}
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="json-has-headers"
@@ -261,6 +307,7 @@ const CsvJsonConverter = () => {
                       Include header row
                     </Label>
                   </div>
+                  {/* END Has Headers */}
                 </div>
 
                 {/* Input */}
@@ -273,12 +320,15 @@ const CsvJsonConverter = () => {
                     className="min-h-[200px] font-mono text-sm"
                   />
                 </div>
+                {/* END Input */}
 
                 {/* Convert Button */}
                 <Button onClick={convertJsonToCsv} className="w-full">
                   <ArrowLeftRight className="w-4 h-4 mr-2" />
                   Convert JSON to CSV
                 </Button>
+                {/* END Convert Button */}
+
               </div>
             </TabsContent>
           </Tabs>
@@ -289,6 +339,7 @@ const CsvJsonConverter = () => {
               {error}
             </div>
           )}
+          {/* END Error */}
 
           {/* Output */}
           {output && (
@@ -329,8 +380,13 @@ const CsvJsonConverter = () => {
               </div>
             </div>
           )}
+          {/* END Output */}
         </CardContent>
       </Card>
+
+       {/* FAQ */}
+            <FAQ faqs={faqs} />
+            {/* END FAQ */}
     </div>
   );
 };

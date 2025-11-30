@@ -1,59 +1,77 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
+import { FAQ } from "@/components/FAQ";
+import { FaqType } from "@/types/faq.type";
+import { diffCheckerFaqs } from "@/data/faq/conversion-tool-faq";
 
 interface DiffLine {
-  type: 'equal' | 'insert' | 'delete';
+  type: "equal" | "insert" | "delete";
   value: string;
   lineNumber1?: number;
   lineNumber2?: number;
 }
 
 const DiffChecker = () => {
+  // States
   const [text1, setText1] = useState("");
   const [text2, setText2] = useState("");
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
   const [ignoreCase, setIgnoreCase] = useState(false);
 
+  // Process Line
   const preprocessLine = (line: string): string => {
     let processed = line;
     if (ignoreWhitespace) {
-      processed = processed.replace(/\s+/g, ' ').trim();
+      // Without whitespaces
+      processed = processed.replace(/\s+/g, " ").trim();
     }
     if (ignoreCase) {
+      // Without case sensitive
       processed = processed.toLowerCase();
     }
     return processed;
   };
 
+  // Compute Diff
   const computeDiff = (): DiffLine[] => {
-    const lines1 = text1.split('\n');
-    const lines2 = text2.split('\n');
-    
+    // Split lines
+    const lines1 = text1.split("\n");
+    const lines2 = text2.split("\n");
+
+    // Process lines
     const processed1 = lines1.map(preprocessLine);
     const processed2 = lines2.map(preprocessLine);
-    
+
+    // Compute diff
     const result: DiffLine[] = [];
-    let i = 0, j = 0;
-    
+    let i = 0,
+      j = 0;
+
     while (i < lines1.length || j < lines2.length) {
       if (i >= lines1.length) {
-        result.push({ type: 'insert', value: lines2[j], lineNumber2: j + 1 });
+        result.push({ type: "insert", value: lines2[j], lineNumber2: j + 1 });
         j++;
       } else if (j >= lines2.length) {
-        result.push({ type: 'delete', value: lines1[i], lineNumber1: i + 1 });
+        result.push({ type: "delete", value: lines1[i], lineNumber1: i + 1 });
         i++;
       } else if (processed1[i] === processed2[j]) {
-        result.push({ 
-          type: 'equal', 
-          value: lines1[i], 
-          lineNumber1: i + 1, 
-          lineNumber2: j + 1 
+        result.push({
+          type: "equal",
+          value: lines1[i],
+          lineNumber1: i + 1,
+          lineNumber2: j + 1,
         });
         i++;
         j++;
@@ -63,19 +81,28 @@ const DiffChecker = () => {
         for (let k = 1; k <= 3 && j + k < lines2.length; k++) {
           if (processed1[i] === processed2[j + k]) {
             for (let m = 0; m < k; m++) {
-              result.push({ type: 'insert', value: lines2[j + m], lineNumber2: j + m + 1 });
+              result.push({
+                type: "insert",
+                value: lines2[j + m],
+                lineNumber2: j + m + 1,
+              });
             }
             j += k;
             foundMatch = true;
             break;
           }
         }
-        
+
+        // Look behind to find matches
         if (!foundMatch) {
           for (let k = 1; k <= 3 && i + k < lines1.length; k++) {
             if (processed1[i + k] === processed2[j]) {
               for (let m = 0; m < k; m++) {
-                result.push({ type: 'delete', value: lines1[i + m], lineNumber1: i + m + 1 });
+                result.push({
+                  type: "delete",
+                  value: lines1[i + m],
+                  lineNumber1: i + m + 1,
+                });
               }
               i += k;
               foundMatch = true;
@@ -83,56 +110,75 @@ const DiffChecker = () => {
             }
           }
         }
-        
+
+        // No match found
         if (!foundMatch) {
-          result.push({ type: 'delete', value: lines1[i], lineNumber1: i + 1 });
-          result.push({ type: 'insert', value: lines2[j], lineNumber2: j + 1 });
+          result.push({ type: "delete", value: lines1[i], lineNumber1: i + 1 });
+          result.push({ type: "insert", value: lines2[j], lineNumber2: j + 1 });
           i++;
           j++;
         }
       }
     }
-    
+
     return result;
   };
 
   const diff = computeDiff();
-  
-  const addedCount = diff.filter(d => d.type === 'insert').length;
-  const removedCount = diff.filter(d => d.type === 'delete').length;
-  const unchangedCount = diff.filter(d => d.type === 'equal').length;
 
+  // Statistics
+  const addedCount = diff.filter((d) => d.type === "insert").length;
+  const removedCount = diff.filter((d) => d.type === "delete").length;
+  const unchangedCount = diff.filter((d) => d.type === "equal").length;
+
+  // Copy Diff
   const copyDiff = () => {
-    const diffText = diff.map(line => {
-      if (line.type === 'insert') return `+ ${line.value}`;
-      if (line.type === 'delete') return `- ${line.value}`;
-      return `  ${line.value}`;
-    }).join('\n');
-    
+    const diffText = diff
+      .map((line) => {
+        if (line.type === "insert") return `+ ${line.value}`;
+        if (line.type === "delete") return `- ${line.value}`;
+        return `  ${line.value}`;
+      })
+      .join("\n");
+
     navigator.clipboard.writeText(diffText);
     toast.success("Diff copied to clipboard");
   };
+
+  // FAQs
+  const faqs: FaqType[] = diffCheckerFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       <Card>
         <CardHeader>
           <CardTitle>Diff Checker</CardTitle>
-          <CardDescription>Compare two text blocks with visual highlighting of differences</CardDescription>
+          <CardDescription>
+            Compare two text blocks with visual highlighting of differences
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Options */}
           <div className="flex flex-wrap gap-6">
+            {/* Ignore Whitespace */}
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="ignoreWhitespace"
                 checked={ignoreWhitespace}
-                onCheckedChange={(checked) => setIgnoreWhitespace(checked as boolean)}
+                onCheckedChange={(checked) =>
+                  setIgnoreWhitespace(checked as boolean)
+                }
               />
-              <Label htmlFor="ignoreWhitespace" className="text-sm cursor-pointer">
+              <Label
+                htmlFor="ignoreWhitespace"
+                className="text-sm cursor-pointer"
+              >
                 Ignore whitespace
               </Label>
             </div>
+            {/* END Ignore Whitespace */}
+
+            {/* Ignore Case */}
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="ignoreCase"
@@ -143,10 +189,12 @@ const DiffChecker = () => {
                 Ignore case
               </Label>
             </div>
+            {/* END Ignore Case */}
           </div>
 
-          {/* Input Textareas */}
+          {/* Input Text Areas */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Original Text */}
             <div className="space-y-2">
               <Label>Original Text</Label>
               <Textarea
@@ -156,6 +204,9 @@ const DiffChecker = () => {
                 className="min-h-[200px] font-mono text-sm"
               />
             </div>
+            {/* END Original Text */}
+
+            {/* Modified Text */}
             <div className="space-y-2">
               <Label>Modified Text</Label>
               <Textarea
@@ -165,7 +216,9 @@ const DiffChecker = () => {
                 className="min-h-[200px] font-mono text-sm"
               />
             </div>
+            {/* END Modified Text */}
           </div>
+          {/* END Input Text Areas */}
 
           {/* Statistics */}
           {(text1 || text2) && (
@@ -182,7 +235,12 @@ const DiffChecker = () => {
                 <div className="w-3 h-3 bg-muted-foreground rounded"></div>
                 <span className="text-sm">Unchanged: {unchangedCount}</span>
               </div>
-              <Button size="sm" variant="outline" onClick={copyDiff} className="ml-auto">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={copyDiff}
+                className="ml-auto"
+              >
                 <Copy className="w-4 h-4 mr-2" />
                 Copy Diff
               </Button>
@@ -200,32 +258,42 @@ const DiffChecker = () => {
                   </span>
                 </div>
                 <div className="max-h-[500px] overflow-auto">
+                  {/* Diff */}
                   {diff.map((line, idx) => (
                     <div
                       key={idx}
                       className={`px-4 py-1 font-mono text-sm border-b last:border-b-0 ${
-                        line.type === 'insert'
-                          ? 'bg-green-500/10 text-green-700 dark:text-green-400'
-                          : line.type === 'delete'
-                          ? 'bg-red-500/10 text-red-700 dark:text-red-400'
-                          : 'bg-background'
+                        line.type === "insert"
+                          ? "bg-green-500/10 text-green-700 dark:text-green-400"
+                          : line.type === "delete"
+                          ? "bg-red-500/10 text-red-700 dark:text-red-400"
+                          : "bg-background"
                       }`}
                     >
                       <span className="inline-block w-12 text-muted-foreground text-xs mr-2">
-                        {line.lineNumber1 || line.lineNumber2 || ''}
+                        {line.lineNumber1 || line.lineNumber2 || ""}
                       </span>
                       <span className="inline-block w-6 font-bold">
-                        {line.type === 'insert' ? '+' : line.type === 'delete' ? '-' : ' '}
+                        {line.type === "insert"
+                          ? "+"
+                          : line.type === "delete"
+                          ? "-"
+                          : " "}
                       </span>
-                      <span>{line.value || ' '}</span>
+                      <span>{line.value || " "}</span>
                     </div>
                   ))}
+                  {/* END Diff */}
                 </div>
               </div>
             </div>
           )}
         </CardContent>
       </Card>
+
+      {/* FAQ */}
+      <FAQ faqs={faqs} />
+      {/* END FAQ */}
     </div>
   );
 };
