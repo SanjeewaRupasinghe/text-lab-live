@@ -25,12 +25,12 @@ import TitleCase from "./pages/functions/case-conversion/TitleCase";
 import CamelCase from "./pages/functions/case-conversion/CamelCase";
 import SnakeCase from "./pages/functions/case-conversion/SnakeCase";
 import KebabCase from "./pages/functions/case-conversion/KebabCase";
-import Trim from "./pages/functions/Trim";
-import RemoveSpaces from "./pages/functions/RemoveSpaces";
-import RemoveBlankLines from "./pages/functions/RemoveBlankLines";
-import SortLines from "./pages/functions/SortLines";
-import NumberLines from "./pages/functions/NumberLines";
-import FindReplace from "./pages/functions/FindReplace";
+import Trim from "./pages/functions/text-formatting/Trim";
+import RemoveSpaces from "./pages/functions/text-formatting/RemoveSpaces";
+import RemoveBlankLines from "./pages/functions/text-formatting/RemoveBlankLines";
+import SortLines from "./pages/functions/text-formatting/SortLines";
+import NumberLines from "./pages/functions/text-formatting/NumberLines";
+import FindReplace from "./pages/functions/text-formatting/FindReplace";
 import Statistics from "./pages/functions/Statistics";
 
 // Conversion tools

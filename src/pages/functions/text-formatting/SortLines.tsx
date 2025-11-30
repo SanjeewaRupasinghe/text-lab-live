@@ -1,60 +1,82 @@
 import { useState } from "react";
 import { TextEditor } from "@/components/TextEditor";
+import { FAQ } from "@/components/FAQ";
+import { FaqType } from "@/types/faq.type";
+import { sortLineFaqs } from "@/data/faq/text-formatting-faq";
 
 const SortLines = () => {
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const transformText = (text: string) => {
+    // Validate
     if (!text.trim()) return "";
-    
-    const lines = text.split('\n');
+
+    const lines = text.split("\n");
     const sortedLines = [...lines].sort((a, b) => {
-      if (sortOrder === 'asc') {
+      if (sortOrder === "asc") {
+        // ASC
         return a.localeCompare(b);
       } else {
+        // DESC
         return b.localeCompare(a);
       }
     });
-    return sortedLines.join('\n');
+    return sortedLines.join("\n");
   };
+
+  // Get faqs
+  const faqs: FaqType[] = sortLineFaqs;
 
   return (
     <div className="container mx-auto p-3 sm:p-6 max-w-6xl">
+      {/* Sort Order */}
       <div className="mb-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-4 mb-4">
           <label className="block text-sm font-medium">Sort Order:</label>
           <div className="flex gap-2">
+            {/* ASC Button */}
             <button
-              onClick={() => setSortOrder('asc')}
+              onClick={() => setSortOrder("asc")}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                sortOrder === 'asc' 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'bg-muted hover:bg-muted/80'
+                sortOrder === "asc"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80"
               }`}
             >
               Ascending (A-Z)
             </button>
+            {/* END ASC Button */}
+
+            {/* DESC Button */}
             <button
-              onClick={() => setSortOrder('desc')}
+              onClick={() => setSortOrder("desc")}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                sortOrder === 'desc' 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'bg-muted hover:bg-muted/80'
+                sortOrder === "desc"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80"
               }`}
             >
               Descending (Z-A)
             </button>
+            {/* END DESC Button */}
           </div>
         </div>
       </div>
+      {/* END Sort Order */}
 
+      {/* Text Editor area*/}
       <TextEditor
         title="Sort Lines"
         description="Sort text lines alphabetically in ascending or descending order."
-        example="Input: zebra\napple\nbanana\ncat → Output: apple\nbanana\ncat\nzebra"
+        example=""
         transform={transformText}
         storageKey="sort-lines"
       />
+      {/* END Text Editor area*/}
+
+      {/* FAQ */}
+      <FAQ faqs={faqs} />
+      {/* END FAQ */}
     </div>
   );
 };
