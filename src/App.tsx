@@ -19,8 +19,8 @@ import Sitemap from "./pages/Sitemap";
 import RobotsTxt from "./pages/RobotsTxt";
 
 // Text transformation functions
-import Uppercase from "./pages/functions/Uppercase";
-import Lowercase from "./pages/functions/Lowercase";
+import Uppercase from "./pages/functions/case-conversion/Uppercase";
+import Lowercase from "./pages/functions/case-conversion/Lowercase";
 import TitleCase from "./pages/functions/TitleCase";
 import CamelCase from "./pages/functions/CamelCase";
 import SnakeCase from "./pages/functions/SnakeCase";
@@ -67,6 +67,7 @@ import DiffChecker from "./pages/functions/DiffChecker";
 import RegexTester from "./pages/functions/RegexTester";
 import WordCloudGenerator from "./pages/functions/WordCloudGenerator";
 import CsvJsonConverter from "./pages/functions/CsvJsonConverter";
+import ScrollToTop from "./components/helper/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -77,82 +78,254 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-            <SidebarProvider>
-              <div className="min-h-screen flex w-full">
-                <AppSidebar />
-                
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col">
-                  {/* Global Header with Sidebar Trigger */}
-                  <header className="h-12 flex items-center border-b bg-background px-4">
-                    <SidebarTrigger />
-                  </header>
-                
+          <ScrollToTop />
+          <SidebarProvider>
+            <div className="min-h-screen flex w-full">
+              <AppSidebar />
+
+              {/* Main Content */}
+              <div className="flex-1 flex flex-col">
+                {/* Global Header with Sidebar Trigger */}
+                <header className="h-12 flex items-center border-b bg-background px-4">
+                  <SidebarTrigger />
+                </header>
+
                 <main className="flex-1">
                   <Routes>
                     {/* Auth Routes */}
                     <Route path="/auth/login" element={<Login />} />
-                    <Route path="/auth/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
-                    
+                    <Route
+                      path="/auth/change-password"
+                      element={
+                        <ProtectedRoute>
+                          <ChangePassword />
+                        </ProtectedRoute>
+                      }
+                    />
+
                     {/* Public Blog Routes */}
                     <Route path="/blogs" element={<BlogList />} />
                     <Route path="/blog/:slug" element={<BlogView />} />
-                    
+
                     {/* Admin Blog Routes */}
-                    <Route path="/admin/blogs" element={<ProtectedRoute><BlogDashboard /></ProtectedRoute>} />
-                    <Route path="/admin/blogs/new" element={<ProtectedRoute><BlogEditor /></ProtectedRoute>} />
-                    <Route path="/admin/blogs/edit/:id" element={<ProtectedRoute><BlogEditor /></ProtectedRoute>} />
-                    <Route path="/admin/sitemap" element={<ProtectedRoute><Sitemap /></ProtectedRoute>} />
-                    <Route path="/admin/robots" element={<ProtectedRoute><RobotsTxt /></ProtectedRoute>} />
-                    
-                    <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                    <Route path="/uppercase" element={<ProtectedRoute><Uppercase /></ProtectedRoute>} />
-                    <Route path="/lowercase" element={<ProtectedRoute><Lowercase /></ProtectedRoute>} />
-                    <Route path="/title-case" element={<ProtectedRoute><TitleCase /></ProtectedRoute>} />
-                    <Route path="/camel-case" element={<ProtectedRoute><CamelCase /></ProtectedRoute>} />
-                    <Route path="/snake-case" element={<ProtectedRoute><SnakeCase /></ProtectedRoute>} />
-                    <Route path="/kebab-case" element={<ProtectedRoute><KebabCase /></ProtectedRoute>} />
-                    <Route path="/trim" element={<ProtectedRoute><Trim /></ProtectedRoute>} />
-                    <Route path="/remove-spaces" element={<ProtectedRoute><RemoveSpaces /></ProtectedRoute>} />
-                    <Route path="/remove-blank-lines" element={<ProtectedRoute><RemoveBlankLines /></ProtectedRoute>} />
-                    <Route path="/sort-lines" element={<ProtectedRoute><SortLines /></ProtectedRoute>} />
-                    <Route path="/number-lines" element={<ProtectedRoute><NumberLines /></ProtectedRoute>} />
-                    <Route path="/find-replace" element={<ProtectedRoute><FindReplace /></ProtectedRoute>} />
-                    <Route path="/statistics" element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
-                    <Route path="/json-formatter" element={<ProtectedRoute><JsonFormatter /></ProtectedRoute>} />
-                    <Route path="/xml-formatter" element={<ProtectedRoute><XmlFormatter /></ProtectedRoute>} />
-                    <Route path="/html-entities" element={<ProtectedRoute><HtmlEntities /></ProtectedRoute>} />
-                    <Route path="/tabs-spaces" element={<ProtectedRoute><TabsSpaces /></ProtectedRoute>} />
-                    <Route path="/newline-converter" element={<ProtectedRoute><NewlineConverter /></ProtectedRoute>} />
-                    <Route path="/base64" element={<ProtectedRoute><Base64 /></ProtectedRoute>} />
-                    <Route path="/url-encoder" element={<ProtectedRoute><UrlEncoder /></ProtectedRoute>} />
-                    <Route path="/caesar-cipher" element={<ProtectedRoute><CaesarCipher /></ProtectedRoute>} />
-                    <Route path="/morse-code" element={<ProtectedRoute><MorseCode /></ProtectedRoute>} />
-                    <Route path="/rot13" element={<ProtectedRoute><ROT13 /></ProtectedRoute>} />
-                    <Route path="/lorem-generator" element={<ProtectedRoute><LoremGenerator /></ProtectedRoute>} />
-                    <Route path="/password-generator" element={<ProtectedRoute><PasswordGenerator /></ProtectedRoute>} />
-                    <Route path="/ascii-generator" element={<ProtectedRoute><AsciiGenerator /></ProtectedRoute>} />
-                    <Route path="/qr-generator" element={<ProtectedRoute><QrGenerator /></ProtectedRoute>} />
-                    <Route path="/reverse-text" element={<ProtectedRoute><ReverseText /></ProtectedRoute>} />
-                    <Route path="/mirror-text" element={<ProtectedRoute><MirrorText /></ProtectedRoute>} />
-                    <Route path="/upside-down" element={<ProtectedRoute><UpsideDown /></ProtectedRoute>} />
-                    <Route path="/leet-speak" element={<ProtectedRoute><LeetSpeak /></ProtectedRoute>} />
-                    <Route path="/slugify" element={<ProtectedRoute><Slugify /></ProtectedRoute>} />
-                    <Route path="/unicode-normalizer" element={<ProtectedRoute><UnicodeNormalizer /></ProtectedRoute>} />
-                    <Route path="/emoji-picker" element={<ProtectedRoute><EmojiPicker /></ProtectedRoute>} />
-                    <Route path="/sample-data-generator" element={<ProtectedRoute><SampleDataGenerator /></ProtectedRoute>} />
-                    <Route path="/markdown-editor" element={<ProtectedRoute><MarkdownEditor /></ProtectedRoute>} />
-                    <Route path="/diff-checker" element={<ProtectedRoute><DiffChecker /></ProtectedRoute>} />
-                    <Route path="/regex-tester" element={<ProtectedRoute><RegexTester /></ProtectedRoute>} />
-                    <Route path="/word-cloud-generator" element={<ProtectedRoute><WordCloudGenerator /></ProtectedRoute>} />
-                    <Route path="/csv-json-converter" element={<ProtectedRoute><CsvJsonConverter /></ProtectedRoute>} />
+                    <Route
+                      path="/admin/blogs"
+                      element={
+                        <ProtectedRoute>
+                          <BlogDashboard />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/blogs/new"
+                      element={
+                        <ProtectedRoute>
+                          <BlogEditor />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/blogs/edit/:id"
+                      element={
+                        <ProtectedRoute>
+                          <BlogEditor />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/sitemap"
+                      element={
+                        <ProtectedRoute>
+                          <Sitemap />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/robots"
+                      element={
+                        <ProtectedRoute>
+                          <RobotsTxt />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route path="/" element={<Home />} />
+
+                    {/* Case conversion */}
+                    <Route path="/uppercase" element={<Uppercase />} />
+                    <Route path="/lowercase" element={<Lowercase />} />
+                    <Route path="/title-case" element={<TitleCase />} />
+                    <Route path="/camel-case" element={<CamelCase />} />
+                    <Route path="/snake-case" element={<SnakeCase />} />
+                    <Route path="/kebab-case" element={<KebabCase />} />
+                    {/* END Case conversion */}
+
+                    <Route path="/trim" element={<Trim />} />
+                    <Route path="/remove-spaces" element={<RemoveSpaces />} />
+                    <Route
+                      path="/remove-blank-lines"
+                      element={<RemoveBlankLines />}
+                    />
+                    <Route path="/sort-lines" element={<SortLines />} />
+                    <Route path="/number-lines" element={<NumberLines />} />
+                    <Route path="/find-replace" element={<FindReplace />} />
+                    <Route path="/statistics" element={<Statistics />} />
+                    <Route path="/json-formatter" element={<JsonFormatter />} />
+                    <Route path="/xml-formatter" element={<XmlFormatter />} />
+                    <Route path="/html-entities" element={<HtmlEntities />} />
+                    <Route path="/tabs-spaces" element={<TabsSpaces />} />
+                    <Route
+                      path="/newline-converter"
+                      element={<NewlineConverter />}
+                    />
+                    <Route path="/base64" element={<Base64 />} />
+                    <Route path="/url-encoder" element={<UrlEncoder />} />
+                    <Route path="/caesar-cipher" element={<CaesarCipher />} />
+                    <Route path="/morse-code" element={<MorseCode />} />
+                    <Route path="/rot13" element={<ROT13 />} />
+                    <Route
+                      path="/lorem-generator"
+                      element={
+                        <ProtectedRoute>
+                          <LoremGenerator />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/password-generator"
+                      element={
+                        <ProtectedRoute>
+                          <PasswordGenerator />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/ascii-generator"
+                      element={
+                        <ProtectedRoute>
+                          <AsciiGenerator />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/qr-generator"
+                      element={
+                        <ProtectedRoute>
+                          <QrGenerator />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/reverse-text"
+                      element={
+                        <ProtectedRoute>
+                          <ReverseText />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/mirror-text"
+                      element={
+                        <ProtectedRoute>
+                          <MirrorText />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/upside-down"
+                      element={
+                        <ProtectedRoute>
+                          <UpsideDown />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/leet-speak"
+                      element={
+                        <ProtectedRoute>
+                          <LeetSpeak />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/slugify"
+                      element={
+                        <ProtectedRoute>
+                          <Slugify />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/unicode-normalizer"
+                      element={
+                        <ProtectedRoute>
+                          <UnicodeNormalizer />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/emoji-picker"
+                      element={
+                        <ProtectedRoute>
+                          <EmojiPicker />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/sample-data-generator"
+                      element={
+                        <ProtectedRoute>
+                          <SampleDataGenerator />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/markdown-editor"
+                      element={
+                        <ProtectedRoute>
+                          <MarkdownEditor />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/diff-checker"
+                      element={
+                        <ProtectedRoute>
+                          <DiffChecker />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/regex-tester"
+                      element={
+                        <ProtectedRoute>
+                          <RegexTester />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/word-cloud-generator"
+                      element={
+                        <ProtectedRoute>
+                          <WordCloudGenerator />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/csv-json-converter"
+                      element={
+                        <ProtectedRoute>
+                          <CsvJsonConverter />
+                        </ProtectedRoute>
+                      }
+                    />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                 </main>
-               </div>
-             </div>
-           </SidebarProvider>
+                </main>
+              </div>
+            </div>
+          </SidebarProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

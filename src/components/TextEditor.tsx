@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Copy, Download, RotateCcw, FileDown, Star, StarOff, SplitSquareHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { FAQ } from "@/components/FAQ";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 
 interface TextEditorProps {
@@ -171,7 +170,6 @@ export const TextEditor = ({ title, description, example, transform, storageKey 
           <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex gap-6 text-sm text-muted-foreground"><div>Lines: {inputStats.lines} → {outputStats.lines}</div><div>Sentences: {inputStats.sentences} → {outputStats.sentences}</div></div><Button variant="outline" onClick={handleReset}><RotateCcw className="w-4 h-4 mr-2" />Reset</Button></div>
         </>
       )}
-      <FAQ />
     </div>
   );
 };
