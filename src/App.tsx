@@ -21,10 +21,10 @@ import RobotsTxt from "./pages/RobotsTxt";
 // Text transformation functions
 import Uppercase from "./pages/functions/case-conversion/Uppercase";
 import Lowercase from "./pages/functions/case-conversion/Lowercase";
-import TitleCase from "./pages/functions/TitleCase";
-import CamelCase from "./pages/functions/CamelCase";
-import SnakeCase from "./pages/functions/SnakeCase";
-import KebabCase from "./pages/functions/KebabCase";
+import TitleCase from "./pages/functions/case-conversion/TitleCase";
+import CamelCase from "./pages/functions/case-conversion/CamelCase";
+import SnakeCase from "./pages/functions/case-conversion/SnakeCase";
+import KebabCase from "./pages/functions/case-conversion/KebabCase";
 import Trim from "./pages/functions/Trim";
 import RemoveSpaces from "./pages/functions/RemoveSpaces";
 import RemoveBlankLines from "./pages/functions/RemoveBlankLines";

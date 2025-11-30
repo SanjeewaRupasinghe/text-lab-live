@@ -22,7 +22,7 @@ export default function Uppercase() {
         transform={transform}
         storageKey="uppercase-transformer"
       />
-      {/* Text Editor area*/}
+      {/* END Text Editor area*/}
 
       {/* FAQ */}
       <FAQ faqs={faqs} />
