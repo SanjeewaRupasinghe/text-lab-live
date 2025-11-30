@@ -41,7 +41,7 @@ import TabsSpaces from "./pages/functions/conversion-tools/TabsSpaces";
 import NewlineConverter from "./pages/functions/NewlineConverter";
 
 // Encoding, Decoding & Encryption
-import Base64 from "./pages/functions/Base64";
+import Base64 from "./pages/functions/encoding-encryption/Base64";
 import UrlEncoder from "./pages/functions/UrlEncoder";
 import CaesarCipher from "./pages/functions/CaesarCipher";
 import MorseCode from "./pages/functions/MorseCode";
