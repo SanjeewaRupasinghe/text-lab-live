@@ -42,10 +42,10 @@ import NewlineConverter from "./pages/functions/NewlineConverter";
 
 // Encoding, Decoding & Encryption
 import Base64 from "./pages/functions/encoding-encryption/Base64";
-import UrlEncoder from "./pages/functions/UrlEncoder";
-import CaesarCipher from "./pages/functions/CaesarCipher";
-import MorseCode from "./pages/functions/MorseCode";
-import ROT13 from "./pages/functions/ROT13";
+import UrlEncoder from "./pages/functions/encoding-encryption/UrlEncoder";
+import CaesarCipher from "./pages/functions/encoding-encryption/CaesarCipher";
+import MorseCode from "./pages/functions/encoding-encryption/MorseCode";
+import ROT13 from "./pages/functions/encoding-encryption/ROT13";
 
 // Generators
 import LoremGenerator from "./pages/functions/LoremGenerator";

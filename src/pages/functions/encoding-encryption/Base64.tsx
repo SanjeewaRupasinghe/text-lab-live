@@ -16,6 +16,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { FAQ } from "@/components/FAQ";
 import { base64Faqs } from "@/data/faq/encoding-encryption-faq";
+import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
 
 export default function Base64() {
   // State
@@ -37,29 +38,11 @@ export default function Base64() {
     setIsBookmarked(bookmarks.includes(currentPath));
   }, []);
 
-
-  const toggleBookmark = () => {
-    const bookmarks = JSON.parse(
-      localStorage.getItem("text-transformer-bookmarks") || "[]"
-    );
-    const currentPath = window.location.pathname;
-
-    const newBookmarks = isBookmarked
-      ? bookmarks.filter((path: string) => path !== currentPath)
-      : [...bookmarks, currentPath];
-
-    localStorage.setItem(
-      "text-transformer-bookmarks",
-      JSON.stringify(newBookmarks)
-    );
-    setIsBookmarked(!isBookmarked);
-
-    toast({
-      title: isBookmarked ? "Bookmark removed" : "Bookmark added",
-      description: isBookmarked
-        ? "This tool has been removed from your bookmarks."
-        : "This tool has been added to your bookmarks.",
-    });
+  // Handle bookmark
+  const handleBookmark = () => {
+    const newState = toggleBookmark(window.location.pathname);
+    setIsBookmarked(newState);
+    toast({ title: newState ? "Bookmark added" : "Bookmark removed" });
   };
 
   // Load from localStorage on mount
@@ -148,20 +131,12 @@ export default function Base64() {
   }, [inputText, mode]);
 
   // Copy to clipboard
-  const handleCopy = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast({
-        title: "Copied to clipboard",
-        description: "Text has been copied to your clipboard.",
-      });
-    } catch (err) {
-      toast({
-        title: "Copy failed",
-        description: "Unable to copy to clipboard.",
-        variant: "destructive",
-      });
-    }
+  const handleCopy = async () => {
+    const success = await copyToClipboard(outputText);
+    toast({
+      title: success ? "Copied to clipboard" : "Copy failed",
+      variant: success ? "default" : "destructive",
+    });
   };
 
   // Reset
@@ -228,7 +203,7 @@ export default function Base64() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={toggleBookmark}
+            onClick={handleBookmark}
             className="flex-shrink-0"
           >
             {isBookmarked ? (
@@ -270,6 +245,7 @@ export default function Base64() {
           </div>
         </Tabs>
       </div>
+      {/* END Mode Selection */}
 
       {/* Status Alert */}
       {getStatusMessage() && (
@@ -287,7 +263,7 @@ export default function Base64() {
       {/* END Status Alert */}
 
       <div className="grid gap-6 lg:grid-cols-2">
-      {/* Input Section */}
+        {/* Input Section */}
         <Card>
           <CardHeader className="pb-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -314,7 +290,7 @@ export default function Base64() {
             {/* END Input Textarea */}
           </CardContent>
         </Card>
-      {/* END Input Section */}
+        {/* END Input Section */}
 
         {/* Output Section */}
         <Card>
@@ -330,7 +306,7 @@ export default function Base64() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => handleCopy(outputText)}
+                  onClick={() => handleCopy()}
                   disabled={!outputText}
                 >
                   <Copy className="w-3 h-3 mr-1" />
@@ -362,7 +338,6 @@ export default function Base64() {
             />
           </CardContent>
           {/* Output Textarea */}
-
         </Card>
         {/* END Output Section */}
       </div>
