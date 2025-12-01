@@ -31,7 +31,7 @@ import RemoveBlankLines from "./pages/functions/text-formatting/RemoveBlankLines
 import SortLines from "./pages/functions/text-formatting/SortLines";
 import NumberLines from "./pages/functions/text-formatting/NumberLines";
 import FindReplace from "./pages/functions/text-formatting/FindReplace";
-import Statistics from "./pages/functions/Statistics";
+import Statistics from "./pages/functions/statistics/Statistics";
 
 // Conversion tools
 import JsonFormatter from "./pages/functions/conversion-tools/JsonFormatter";
