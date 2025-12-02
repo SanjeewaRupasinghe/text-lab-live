@@ -48,10 +48,10 @@ import MorseCode from "./pages/functions/encoding-encryption/MorseCode";
 import ROT13 from "./pages/functions/encoding-encryption/ROT13";
 
 // Generators
-import LoremGenerator from "./pages/functions/LoremGenerator";
-import PasswordGenerator from "./pages/functions/PasswordGenerator";
-import AsciiGenerator from "./pages/functions/AsciiGenerator";
-import QrGenerator from "./pages/functions/QrGenerator";
+import LoremGenerator from "./pages/functions/generators/LoremGenerator";
+import PasswordGenerator from "./pages/functions/generators/PasswordGenerator";
+import AsciiGenerator from "./pages/functions/generators/AsciiGenerator";
+import QrGenerator from "./pages/functions/generators/QrGenerator";
 
 // Additional Transformations
 import ReverseText from "./pages/functions/ReverseText";
@@ -61,7 +61,7 @@ import LeetSpeak from "./pages/functions/LeetSpeak";
 import Slugify from "./pages/functions/Slugify";
 import UnicodeNormalizer from "./pages/functions/UnicodeNormalizer";
 import EmojiPicker from "./pages/functions/EmojiPicker";
-import SampleDataGenerator from "./pages/functions/SampleDataGenerator";
+import SampleDataGenerator from "./pages/functions/generators/SampleDataGenerator";
 import MarkdownEditor from "./pages/functions/conversion-tools/MarkdownEditor";
 import DiffChecker from "./pages/functions/conversion-tools/DiffChecker";
 import RegexTester from "./pages/functions/conversion-tools/RegexTester";
@@ -163,82 +163,84 @@ const App = () => {
                     {/* Text formatting */}
                     <Route path="/trim" element={<Trim />} />
                     <Route path="/remove-spaces" element={<RemoveSpaces />} />
-                    <Route path="/remove-blank-lines" element={<RemoveBlankLines />} />
+                    <Route
+                      path="/remove-blank-lines"
+                      element={<RemoveBlankLines />}
+                    />
                     <Route path="/sort-lines" element={<SortLines />} />
                     <Route path="/number-lines" element={<NumberLines />} />
                     <Route path="/find-replace" element={<FindReplace />} />
                     {/* END Text formatting */}
 
                     {/* Conversion tools */}
-                    <Route path="/markdown-editor" element={<MarkdownEditor />} />
-                    <Route path="/statistics" element={<Statistics />} />
-                    <Route path="/tabs-spaces" element={<TabsSpaces />} /> 
+                    <Route
+                      path="/markdown-editor"
+                      element={<MarkdownEditor />}
+                    />
+                    <Route path="/tabs-spaces" element={<TabsSpaces />} />
 
                     <Route path="/json-formatter" element={<JsonFormatter />} />
                     <Route path="/xml-formatter" element={<XmlFormatter />} />
                     <Route path="/html-entities" element={<HtmlEntities />} />
-                    <Route path="/newline-converter" element={<NewlineConverter />} />
-                    <Route path="/csv-json-converter" element={<CsvJsonConverter />} />
+                    <Route
+                      path="/newline-converter"
+                      element={<NewlineConverter />}
+                    />
+                    <Route
+                      path="/csv-json-converter"
+                      element={<CsvJsonConverter />}
+                    />
                     <Route path="/diff-checker" element={<DiffChecker />} />
                     <Route path="/regex-tester" element={<RegexTester />} />
                     {/* END Conversion tools */}
 
+                    {/* Encoding and Encryption tools */}
                     <Route path="/base64" element={<Base64 />} />
                     <Route path="/url-encoder" element={<UrlEncoder />} />
                     <Route path="/caesar-cipher" element={<CaesarCipher />} />
-                    <Route path="/morse-code" element={<MorseCode />} />
                     <Route path="/rot13" element={<ROT13 />} />
-                    <Route path="/lorem-generator" element={<LoremGenerator />} />
-                    <Route path="/password-generator" element={<PasswordGenerator />} />
-                    <Route path="/ascii-generator" element={<AsciiGenerator />} />
+                    <Route path="/morse-code" element={<MorseCode />} />
+                    {/* Encoding and Encryption tools */}
+
+                    {/* Statistics */}
+                    <Route path="/statistics" element={<Statistics />} />
+                    {/* END Statistics */}
+
+                    {/* Generators */}
+                    <Route
+                      path="/lorem-generator"
+                      element={<LoremGenerator />}
+                    />
+                    <Route
+                      path="/password-generator"
+                      element={<PasswordGenerator />}
+                    />
+                    <Route
+                      path="/ascii-generator"
+                      element={<AsciiGenerator />}
+                    />
                     <Route path="/qr-generator" element={<QrGenerator />} />
+                    <Route
+                      path="/sample-data-generator"
+                      element={<SampleDataGenerator />}
+                    />
+
                     <Route path="/reverse-text" element={<ReverseText />} />
                     <Route path="/mirror-text" element={<MirrorText />} />
                     <Route path="/upside-down" element={<UpsideDown />} />
                     <Route path="/leet-speak" element={<LeetSpeak />} />
-                    <Route
-                      path="/slugify"
-                      element={
-                        <ProtectedRoute>
-                          <Slugify />
-                        </ProtectedRoute>
-                      }
-                    />
+                    <Route path="/slugify" element={<Slugify />} />
                     <Route
                       path="/unicode-normalizer"
-                      element={
-                        <ProtectedRoute>
-                          <UnicodeNormalizer />
-                        </ProtectedRoute>
-                      }
+                      element={<UnicodeNormalizer />}
                     />
-                    <Route
-                      path="/emoji-picker"
-                      element={
-                        <ProtectedRoute>
-                          <EmojiPicker />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/sample-data-generator"
-                      element={
-                        <ProtectedRoute>
-                          <SampleDataGenerator />
-                        </ProtectedRoute>
-                      }
-                    />
+                    <Route path="/emoji-picker" element={<EmojiPicker />} />
 
-                    
                     <Route
                       path="/word-cloud-generator"
-                      element={
-                        <ProtectedRoute>
-                          <WordCloudGenerator />
-                        </ProtectedRoute>
-                      }
+                      element={<WordCloudGenerator />}
                     />
-                    
+
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

@@ -3,14 +3,41 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Download, QrCode, RefreshCw, Wifi, Mail, Phone, Link, MapPin } from "lucide-react";
+import {
+  Copy,
+  Download,
+  QrCode,
+  RefreshCw,
+  Wifi,
+  Mail,
+  Phone,
+  Link,
+  MapPin,
+  Star,
+  StarOff,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import QRCodeLib from "qrcode";
+import { FAQ } from "@/components/FAQ";
+import { qrGeneratorFaqs } from "@/data/faq/generator-faq";
+import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
 
 interface QRPreset {
   name: string;
@@ -30,46 +57,74 @@ const QR_PRESETS: QRPreset[] = [
     icon: Link,
     template: "{url}",
     fields: [
-      { name: "url", label: "Website URL", placeholder: "https://example.com", type: "url" }
-    ]
+      {
+        name: "url",
+        label: "Website URL",
+        placeholder: "https://example.com",
+        type: "url",
+      },
+    ],
   },
   {
     name: "WiFi Network",
     icon: Wifi,
     template: "WIFI:T:{security};S:{ssid};P:{password};H:{hidden};;",
     fields: [
-      { name: "ssid", label: "Network Name (SSID)", placeholder: "MyWiFiNetwork" },
+      {
+        name: "ssid",
+        label: "Network Name (SSID)",
+        placeholder: "MyWiFiNetwork",
+      },
       { name: "password", label: "Password", placeholder: "password123" },
       { name: "security", label: "Security Type", placeholder: "WPA" },
-      { name: "hidden", label: "Hidden Network", placeholder: "false" }
-    ]
+      { name: "hidden", label: "Hidden Network", placeholder: "false" },
+    ],
   },
   {
     name: "Email",
     icon: Mail,
     template: "mailto:{email}?subject={subject}&body={body}",
     fields: [
-      { name: "email", label: "Email Address", placeholder: "example@email.com", type: "email" },
+      {
+        name: "email",
+        label: "Email Address",
+        placeholder: "example@email.com",
+        type: "email",
+      },
       { name: "subject", label: "Subject", placeholder: "Hello!" },
-      { name: "body", label: "Message", placeholder: "Enter your message here..." }
-    ]
+      {
+        name: "body",
+        label: "Message",
+        placeholder: "Enter your message here...",
+      },
+    ],
   },
   {
     name: "Phone Number",
     icon: Phone,
     template: "tel:{phone}",
     fields: [
-      { name: "phone", label: "Phone Number", placeholder: "+1234567890", type: "tel" }
-    ]
+      {
+        name: "phone",
+        label: "Phone Number",
+        placeholder: "+1234567890",
+        type: "tel",
+      },
+    ],
   },
   {
     name: "SMS/Text",
     icon: Phone,
     template: "sms:{phone}?body={message}",
     fields: [
-      { name: "phone", label: "Phone Number", placeholder: "+1234567890", type: "tel" },
-      { name: "message", label: "Message", placeholder: "Hello from QR code!" }
-    ]
+      {
+        name: "phone",
+        label: "Phone Number",
+        placeholder: "+1234567890",
+        type: "tel",
+      },
+      { name: "message", label: "Message", placeholder: "Hello from QR code!" },
+    ],
   },
   {
     name: "Location",
@@ -78,12 +133,13 @@ const QR_PRESETS: QRPreset[] = [
     fields: [
       { name: "lat", label: "Latitude", placeholder: "40.7128" },
       { name: "lng", label: "Longitude", placeholder: "-74.0060" },
-      { name: "name", label: "Location Name", placeholder: "New York City" }
-    ]
-  }
+      { name: "name", label: "Location Name", placeholder: "New York City" },
+    ],
+  },
 ];
 
 export default function QrGenerator() {
+  // State
   const [mode, setMode] = useState("text");
   const [text, setText] = useState("");
   const [preset, setPreset] = useState("URL/Website");
@@ -95,8 +151,9 @@ export default function QrGenerator() {
   const [darkColor, setDarkColor] = useState("#000000");
   const [lightColor, setLightColor] = useState("#ffffff");
   const { toast } = useToast();
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
-  const currentPreset = QR_PRESETS.find(p => p.name === preset)!;
+  const currentPreset = QR_PRESETS.find((p) => p.name === preset)!;
 
   const generateQRData = () => {
     if (mode === "text") {
@@ -118,7 +175,7 @@ export default function QrGenerator() {
       toast({
         title: "Error",
         description: "Please enter some text or fill in the required fields.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -129,9 +186,9 @@ export default function QrGenerator() {
         margin: margin[0],
         color: {
           dark: darkColor,
-          light: lightColor
+          light: lightColor,
         },
-        errorCorrectionLevel: errorLevel as 'L' | 'M' | 'Q' | 'H'
+        errorCorrectionLevel: errorLevel as "L" | "M" | "Q" | "H",
       };
 
       const dataUrl = await QRCodeLib.toDataURL(data, options);
@@ -140,7 +197,7 @@ export default function QrGenerator() {
       toast({
         title: "Error generating QR code",
         description: "Please check your input and try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -148,43 +205,93 @@ export default function QrGenerator() {
   const downloadQR = () => {
     if (!qrDataUrl) return;
 
-    const link = document.createElement('a');
-    link.download = 'qrcode.png';
+    const link = document.createElement("a");
+    link.download = "qrcode.png";
     link.href = qrDataUrl;
     link.click();
   };
 
   const copyQRData = async () => {
     const data = generateQRData();
-    await navigator.clipboard.writeText(data);
+    await copyToClipboard(data);
+
     toast({
       title: "Copied to clipboard",
       description: "QR code data has been copied to your clipboard.",
     });
   };
 
+  // Handle bookmark
+  const handleBookmark = () => {
+    const newState = toggleBookmark(window.location.pathname);
+    setIsBookmarked(newState);
+    toast({ title: newState ? "Bookmark added" : "Bookmark removed" });
+  };
+
+  // Check if current page is bookmarked
   useEffect(() => {
-    if ((mode === "text" && text) || (mode === "preset" && Object.keys(presetFields).length > 0)) {
+    const bookmarks = JSON.parse(
+      localStorage.getItem("text-transformer-bookmarks") || "[]"
+    );
+    const currentPath = window.location.pathname;
+    setIsBookmarked(bookmarks.includes(currentPath));
+  }, []);
+
+  useEffect(() => {
+    if (
+      (mode === "text" && text) ||
+      (mode === "preset" && Object.keys(presetFields).length > 0)
+    ) {
       generateQR();
     }
-  }, [mode, text, preset, presetFields, size, errorLevel, margin, darkColor, lightColor]);
+  }, [
+    mode,
+    text,
+    preset,
+    presetFields,
+    size,
+    errorLevel,
+    margin,
+    darkColor,
+    lightColor,
+  ]);
 
   const updatePresetField = (fieldName: string, value: string) => {
-    setPresetFields(prev => ({
+    setPresetFields((prev) => ({
       ...prev,
-      [fieldName]: value
+      [fieldName]: value,
     }));
   };
+
+  // Get faqs
+  const faqs = qrGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-2">
           <QrCode className="w-6 h-6 text-primary" />
           <h1 className="text-3xl font-bold">QR Code Generator</h1>
+          </div>
+          <div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBookmark}
+              className="flex-shrink-0"
+            >
+              {isBookmarked ? (
+                <Star className="w-5 h-5 fill-current text-yellow-500" />
+              ) : (
+                <StarOff className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
         </div>
         <p className="text-muted-foreground">
-          Generate QR codes for text, URLs, WiFi, email, phone numbers, and more with customizable styling.
+          Generate QR codes for text, URLs, WiFi, email, phone numbers, and more
+          with customizable styling.
         </p>
       </div>
 
@@ -200,11 +307,14 @@ export default function QrGenerator() {
             </CardHeader>
             <CardContent className="space-y-4">
               <Tabs value={mode} onValueChange={setMode}>
+                {/* Tabs */}
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="text">Custom Text</TabsTrigger>
                   <TabsTrigger value="preset">Quick Presets</TabsTrigger>
                 </TabsList>
+                {/* END Tabs */}
 
+                {/* Tabs Content */}
                 <TabsContent value="text" className="space-y-4">
                   <div>
                     <Label htmlFor="text">Text Content</Label>
@@ -217,14 +327,20 @@ export default function QrGenerator() {
                     />
                   </div>
                 </TabsContent>
+                {/* END Tabs Content */}
 
+                {/* Tabs Content */}
                 <TabsContent value="preset" className="space-y-4">
+                  {/* Select */}
                   <div>
                     <Label>Preset Type</Label>
-                    <Select value={preset} onValueChange={(value) => {
-                      setPreset(value);
-                      setPresetFields({});
-                    }}>
+                    <Select
+                      value={preset}
+                      onValueChange={(value) => {
+                        setPreset(value);
+                        setPresetFields({});
+                      }}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -240,7 +356,9 @@ export default function QrGenerator() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {/* END Select */}
 
+                  {/* Fields */}
                   {currentPreset.fields.map((field) => (
                     <div key={field.name}>
                       <Label htmlFor={field.name}>{field.label}</Label>
@@ -248,21 +366,29 @@ export default function QrGenerator() {
                         id={field.name}
                         type={field.type || "text"}
                         value={presetFields[field.name] || ""}
-                        onChange={(e) => updatePresetField(field.name, e.target.value)}
+                        onChange={(e) =>
+                          updatePresetField(field.name, e.target.value)
+                        }
                         placeholder={field.placeholder}
                       />
                     </div>
                   ))}
+                  {/* END Fields */}
 
+                  {/* Generated Data */}
                   {mode === "preset" && (
                     <div className="p-3 bg-muted/50 rounded text-sm">
-                      <Label className="text-xs text-muted-foreground">Generated Data:</Label>
+                      <Label className="text-xs text-muted-foreground">
+                        Generated Data:
+                      </Label>
                       <code className="block mt-1 text-xs break-all">
                         {generateQRData() || "Fill in the fields above..."}
                       </code>
                     </div>
                   )}
+                  {/* END Generated Data */}
                 </TabsContent>
+                {/* END Tabs Content */}
               </Tabs>
             </CardContent>
           </Card>
@@ -275,6 +401,7 @@ export default function QrGenerator() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Size */}
               <div>
                 <Label>Size: {size[0]}px</Label>
                 <Slider
@@ -286,7 +413,9 @@ export default function QrGenerator() {
                   className="w-full"
                 />
               </div>
+              {/* END Size */}
 
+              {/* Error Correction Level */}
               <div>
                 <Label>Error Correction Level</Label>
                 <Select value={errorLevel} onValueChange={setErrorLevel}>
@@ -301,7 +430,9 @@ export default function QrGenerator() {
                   </SelectContent>
                 </Select>
               </div>
+              {/* END Error Correction Level */}
 
+              {/* Margin */}
               <div>
                 <Label>Margin: {margin[0]}px</Label>
                 <Slider
@@ -313,8 +444,11 @@ export default function QrGenerator() {
                   className="w-full"
                 />
               </div>
+              {/* END Margin */}
 
+              {/* Colors */}
               <div className="grid grid-cols-2 gap-4">
+                {/* Dark Color */}
                 <div>
                   <Label htmlFor="darkColor">Dark Color</Label>
                   <div className="flex gap-2">
@@ -332,7 +466,9 @@ export default function QrGenerator() {
                     />
                   </div>
                 </div>
+                {/* END Dark Color */}
 
+                {/* Light Color */}
                 <div>
                   <Label htmlFor="lightColor">Light Color</Label>
                   <div className="flex gap-2">
@@ -350,8 +486,11 @@ export default function QrGenerator() {
                     />
                   </div>
                 </div>
+                {/* END Light Color */}
               </div>
+              {/* END Colors */}
 
+              {/* Buttons */}
               <div className="flex gap-2">
                 <Button onClick={generateQR} className="flex-1">
                   <RefreshCw className="w-4 h-4 mr-2" />
@@ -361,18 +500,18 @@ export default function QrGenerator() {
                   <Copy className="w-4 h-4" />
                 </Button>
               </div>
+              {/* END Buttons */}
             </CardContent>
           </Card>
         </div>
+        {/* END Controls */}
 
         {/* Output */}
         <div>
           <Card>
             <CardHeader>
               <CardTitle>Generated QR Code</CardTitle>
-              <CardDescription>
-                Your QR code will appear here
-              </CardDescription>
+              <CardDescription>Your QR code will appear here</CardDescription>
             </CardHeader>
             <CardContent>
               {qrDataUrl ? (
@@ -384,7 +523,7 @@ export default function QrGenerator() {
                       className="border rounded-lg shadow-sm"
                     />
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <Button onClick={downloadQR} className="flex-1">
                       <Download className="w-4 h-4 mr-2" />
@@ -393,7 +532,9 @@ export default function QrGenerator() {
                   </div>
 
                   <div className="text-sm text-muted-foreground space-y-1">
-                    <div>Size: {size[0]} × {size[0]} pixels</div>
+                    <div>
+                      Size: {size[0]} × {size[0]} pixels
+                    </div>
                     <div>Error Correction: {errorLevel}</div>
                     <div>Data Length: {generateQRData().length} characters</div>
                   </div>
@@ -409,7 +550,12 @@ export default function QrGenerator() {
             </CardContent>
           </Card>
         </div>
+        {/* END Output */}
       </div>
+
+      {/* FAQ */}
+      <FAQ faqs={faqs} />
+      {/* END FAQ */}
     </div>
   );
 }
