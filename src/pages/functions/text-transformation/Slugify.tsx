@@ -1,4 +1,7 @@
+import { FAQ } from "@/components/FAQ";
 import { TextEditor } from "@/components/TextEditor";
+import { slugifyFaqs } from "@/data/faq/text-transformation-faq";
+import { FaqType } from "@/types/faq.type";
 
 const Slugify = () => {
   const slugify = (text: string): string => {
@@ -20,14 +23,25 @@ const Slugify = () => {
       .replace(/^-+|-+$/g, '');
   };
 
+  // Get faqs
+  const faqs: FaqType[] = slugifyFaqs;
+
   return (
+    <>
+    {/* Text Editor */}
     <TextEditor
       title="Slugify"
       description="Convert text to URL-safe slugs by removing special characters, converting to lowercase, and replacing spaces with hyphens."
       example="Hello World! → hello-world"
       transform={slugify}
       storageKey="slugify"
-    />
+      />
+      {/* END Text Editor */}
+      
+      {/* FAQ */}
+      <FAQ faqs={faqs} />
+      {/* END FAQ */}
+      </>
   );
 };
 

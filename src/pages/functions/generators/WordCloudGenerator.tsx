@@ -12,13 +12,17 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw } from "lucide-react";
+import { Download, RefreshCw, Star, StarOff } from "lucide-react";
 import { toast } from "sonner";
 import {
   COLORS,
   STOP_WORDS,
   WordFrequency,
 } from "@/data/WorldCloudGeneratorData";
+import { FAQ } from "@/components/FAQ";
+import { wordCloudFaqs } from "@/data/faq/generator-faq";
+import { FaqType } from "@/types/faq.type";
+import { toggleBookmark } from "@/lib/textEditorUtils";
 
 const WordCloudGenerator = () => {
   // States
@@ -28,6 +32,7 @@ const WordCloudGenerator = () => {
   const [removeStopWords, setRemoveStopWords] = useState(true);
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [words, setWords] = useState<WordFrequency[]>([]);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
     // Validate
@@ -129,15 +134,52 @@ const WordCloudGenerator = () => {
     }
   };
 
+  // Handle bookmark
+  const handleBookmark = () => {
+    const newState = toggleBookmark(window.location.pathname);
+    setIsBookmarked(newState);
+    toast.success(newState ? "Bookmark added" : "Bookmark removed");
+  };
+
+  // Check if current page is bookmarked
+  useEffect(() => {
+    const bookmarks = JSON.parse(
+      localStorage.getItem("text-transformer-bookmarks") || "[]"
+    );
+    const currentPath = window.location.pathname;
+    setIsBookmarked(bookmarks.includes(currentPath));
+  }, []);
+
   // Calculate stats
   const totalWords = words.reduce((sum, w) => sum + w.count, 0);
   const uniqueWords = words.length;
+
+  // Get faqs
+  const faqs: FaqType[] = wordCloudFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <Card>
         <CardHeader>
-          <CardTitle>Word Cloud Generator</CardTitle>
+          <CardTitle className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2">
+              Word Cloud Generator
+            </div>
+            <div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleBookmark}
+                className="flex-shrink-0"
+              >
+                {isBookmarked ? (
+                  <Star className="w-5 h-5 fill-current text-yellow-500" />
+                ) : (
+                  <StarOff className="w-5 h-5" />
+                )}
+              </Button>
+            </div>
+          </CardTitle>
           <CardDescription>
             Visualize word frequency with an interactive word cloud
           </CardDescription>
@@ -308,6 +350,10 @@ const WordCloudGenerator = () => {
           {/* END Word List */}
         </CardContent>
       </Card>
+
+      {/* FAQ */}
+      <FAQ faqs={faqs} />
+      {/* END FAQ */}
     </div>
   );
 };

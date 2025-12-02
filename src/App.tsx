@@ -54,12 +54,12 @@ import AsciiGenerator from "./pages/functions/generators/AsciiGenerator";
 import QrGenerator from "./pages/functions/generators/QrGenerator";
 
 // Additional Transformations
-import ReverseText from "./pages/functions/ReverseText";
-import MirrorText from "./pages/functions/MirrorText";
-import UpsideDown from "./pages/functions/UpsideDown";
-import LeetSpeak from "./pages/functions/LeetSpeak";
-import Slugify from "./pages/functions/Slugify";
-import UnicodeNormalizer from "./pages/functions/UnicodeNormalizer";
+import ReverseText from "./pages/functions/text-transformation/ReverseText";
+import MirrorText from "./pages/functions/text-transformation/MirrorText";
+import UpsideDown from "./pages/functions/text-transformation/UpsideDown";
+import LeetSpeak from "./pages/functions/text-transformation/LeetSpeak";
+import Slugify from "./pages/functions/text-transformation/Slugify";
+import UnicodeNormalizer from "./pages/functions/text-transformation/UnicodeNormalizer";
 import EmojiPicker from "./pages/functions/EmojiPicker";
 import SampleDataGenerator from "./pages/functions/generators/SampleDataGenerator";
 import MarkdownEditor from "./pages/functions/conversion-tools/MarkdownEditor";

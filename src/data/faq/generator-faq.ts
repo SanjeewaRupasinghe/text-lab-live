@@ -219,3 +219,47 @@ export const sampleDataGeneratorFaqs: FaqType[] = [
     answer: "Yes, sample data generators can create large volumes of data for load and performance testing. You can generate thousands or millions of records to test database performance, query optimization, pagination, search functionality, and system scalability. Be mindful of browser memory limits for web-based generators—use server-side or command-line tools for very large datasets."
   }
 ];
+
+// Word Cloud Generator FAQ
+export const wordCloudFaqs: FaqType[] = [
+  {
+    question: "What is a word cloud?",
+    answer: "A word cloud (also called tag cloud) is a visual representation of text data where words are displayed in various sizes based on their frequency or importance. More frequent or important words appear larger and more prominent, while less common words appear smaller. This creates an intuitive, at-a-glance visualization of key themes and concepts in text."
+  },
+  {
+    question: "When should I create a word cloud?",
+    answer: "Create word clouds for visualizing survey responses and feedback, analyzing social media content or customer reviews, identifying key themes in documents or articles, presenting research findings visually, summarizing lengthy text content, finding trending topics or keywords, creating engaging presentation slides, and making data more accessible and understandable to non-technical audiences."
+  },
+  {
+    question: "How does word frequency affect word size?",
+    answer: "Word cloud generators count how many times each word appears in your text. Words that occur more frequently are displayed in larger font sizes, making them more visually prominent. The size scaling is typically proportional or logarithmic, ensuring that even moderately frequent words are visible while preventing extremely common words from overwhelming the visualization."
+  },
+  {
+    question: "What are stop words and should I remove them?",
+    answer: "Stop words are common words like 'the', 'and', 'is', 'a', 'to' that appear frequently but carry little meaning. Most word cloud generators offer options to filter these out automatically, allowing more meaningful content words to be emphasized. Removing stop words usually creates more insightful visualizations by highlighting the substantive vocabulary in your text."
+  },
+  {
+    question: "Can I customize word cloud colors and shapes?",
+    answer: "Yes, most word cloud generators allow extensive customization including color schemes (single color, gradients, or custom palettes), font styles and families, background colors, word orientations (horizontal, vertical, or mixed angles), overall shapes (rectangular, circular, custom silhouettes), spacing between words, and maximum number of words displayed for cleaner visualizations."
+  },
+  {
+    question: "What's the best format for word cloud input text?",
+    answer: "Word clouds work best with substantial text content—at least a few paragraphs or several hundred words to create meaningful frequency patterns. Plain text works perfectly, but you can also use formatted documents. For optimal results, remove headers, footers, references, and boilerplate text that might skew frequency counts. Focus on the core content you want to visualize."
+  },
+  {
+    question: "Can I export or share my word cloud?",
+    answer: "Most word cloud generators allow exporting as image files (PNG, JPEG, SVG) for use in presentations, documents, or social media. SVG format is ideal for print materials as it scales without quality loss. Some tools also offer interactive word clouds for websites where users can hover or click words for additional information or filtering."
+  },
+  {
+    question: "How accurate are word clouds for data analysis?",
+    answer: "Word clouds provide excellent quick visual summaries and are great for identifying prominent themes at a glance. However, they have limitations: they don't show context, relationships between words, sentiment, or temporal patterns. Use word clouds for initial exploration and presentation, but supplement with more rigorous text analysis methods for detailed insights and decision-making."
+  },
+  {
+    question: "Can word clouds handle multiple languages?",
+    answer: "Most word cloud generators support Unicode and can display any language that uses text characters, including non-Latin scripts like Arabic, Chinese, Japanese, or Cyrillic. However, stop word lists may only work for common languages like English. For best results with other languages, provide custom stop word lists appropriate for that language to filter out common words effectively."
+  },
+  {
+    question: "What's the difference between word clouds and tag clouds?",
+    answer: "The terms are often used interchangeably, but technically tag clouds were originally used for website navigation, displaying tags or categories with size indicating usage frequency. Word clouds are broader, visualizing any text content with words sized by frequency. Modern usage has largely merged these concepts, with 'word cloud' being the more common term for any frequency-based text visualization."
+  }
+];

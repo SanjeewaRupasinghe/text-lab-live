@@ -8,7 +8,6 @@ import {
   Star,
   StarOff,
 } from "lucide-react";
-import { faker } from "@faker-js/faker";
 import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import {
