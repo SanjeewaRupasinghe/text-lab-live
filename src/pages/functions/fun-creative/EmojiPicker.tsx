@@ -89,7 +89,7 @@ const EmojiPicker = () => {
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-4 dark:text-white">
             Emoji Picker
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -118,7 +118,10 @@ const EmojiPicker = () => {
                   <Settings className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 bg-white" align="end">
+              <PopoverContent
+                className="w-80 bg-white dark:bg-gray-800"
+                align="end"
+              >
                 {/* Dropdown area */}
                 <div className="space-y-4">
                   <div>
@@ -132,7 +135,7 @@ const EmojiPicker = () => {
                             return (
                               <div
                                 key={category.id}
-                                className="flex items-center space-x-2"
+                                className="flex items-center space-x-2 dark:hover:bg-gray-700"
                               >
                                 <Checkbox
                                   id={category.id}

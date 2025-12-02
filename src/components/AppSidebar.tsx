@@ -261,7 +261,7 @@ export function AppSidebar() {
 
   const isActive = (path: string) => location.pathname === path;
   const getNavCls = (path: string) => 
-    isActive(path) ? "bg-muted text-primary font-medium" : "hover:bg-muted/50";
+    isActive(path) ? "bg-muted text-primary font-medium dark:text-gray-400" : "hover:bg-muted/50";
 
   return (
     <>

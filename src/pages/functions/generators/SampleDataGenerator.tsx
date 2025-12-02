@@ -237,7 +237,7 @@ export default function SampleDataGenerator() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-[var(--radix-popover-trigger-width)] max-h-[300px] p-0 bg-white"
+                  className="w-[var(--radix-popover-trigger-width)] max-h-[300px] p-0 bg-white dark:bg-gray-800 dark:hover:bg-gray-700"
                   align="start"
                 >
                   <Command>
@@ -250,7 +250,7 @@ export default function SampleDataGenerator() {
                             <CommandItem
                               key={key}
                               value={template.label}
-                              className="bg-white"
+                              className="bg-white dark:bg-gray-800 dark:hover:bg-gray-700"
                               onSelect={() => {
                                 setDataType(key as DataType);
                                 setOpen(false);
