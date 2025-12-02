@@ -65,7 +65,7 @@ import SampleDataGenerator from "./pages/functions/generators/SampleDataGenerato
 import MarkdownEditor from "./pages/functions/conversion-tools/MarkdownEditor";
 import DiffChecker from "./pages/functions/conversion-tools/DiffChecker";
 import RegexTester from "./pages/functions/conversion-tools/RegexTester";
-import WordCloudGenerator from "./pages/functions/WordCloudGenerator";
+import WordCloudGenerator from "./pages/functions/generators/WordCloudGenerator";
 import CsvJsonConverter from "./pages/functions/conversion-tools/CsvJsonConverter";
 import ScrollToTop from "./components/helper/ScrollToTop";
 
