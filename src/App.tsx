@@ -60,7 +60,7 @@ import UpsideDown from "./pages/functions/text-transformation/UpsideDown";
 import LeetSpeak from "./pages/functions/text-transformation/LeetSpeak";
 import Slugify from "./pages/functions/text-transformation/Slugify";
 import UnicodeNormalizer from "./pages/functions/text-transformation/UnicodeNormalizer";
-import EmojiPicker from "./pages/functions/EmojiPicker";
+import EmojiPicker from "./pages/functions/fun-creative/EmojiPicker";
 import SampleDataGenerator from "./pages/functions/generators/SampleDataGenerator";
 import MarkdownEditor from "./pages/functions/conversion-tools/MarkdownEditor";
 import DiffChecker from "./pages/functions/conversion-tools/DiffChecker";
