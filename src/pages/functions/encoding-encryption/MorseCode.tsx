@@ -18,6 +18,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { FAQ } from "@/components/FAQ";
 import { morseCodeFaqs } from "@/data/faq/encoding-encryption-faq";
+import { FaqType } from "@/types/faq.type";
 
 export default function MorseCode() {
   const [inputText, setInputText] = useState("");
@@ -354,7 +355,7 @@ export default function MorseCode() {
   };
 
   // Get faqs
-  const faqs = morseCodeFaqs;
+  const faqs: FaqType[]  = morseCodeFaqs;
 
   return (
     <div className="p-3 sm:p-6">

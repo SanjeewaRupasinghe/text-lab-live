@@ -40,6 +40,7 @@ import { dataTemplates } from "@/data/SampleDataGeneratorData";
 import { FAQ } from "@/components/FAQ";
 import { sampleDataGeneratorFaqs } from "@/data/faq/generator-faq";
 import { toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 export default function SampleDataGenerator() {
   const [dataType, setDataType] = useState<DataType>("user");
@@ -185,7 +186,7 @@ export default function SampleDataGenerator() {
   }, []);
 
   // Get faqs
-  const faqs = sampleDataGeneratorFaqs;
+  const faqs: FaqType[]  = sampleDataGeneratorFaqs;
 
   return (
     <div className="container max-w-6xl mx-auto p-4 space-y-6">

@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FAQ } from "@/components/FAQ";
 import { urlEncoderFaqs } from "@/data/faq/encoding-encryption-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 export default function UrlEncoder() {
   const [inputText, setInputText] = useState("");
@@ -205,7 +206,7 @@ export default function UrlEncoder() {
   };
 
   // Get faqs
-  const faqs = urlEncoderFaqs;
+  const faqs: FaqType[]  = urlEncoderFaqs;
 
   return (
     <div className="p-3 sm:p-6">

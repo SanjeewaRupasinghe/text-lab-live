@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { asciiGeneratorFaqs } from "@/data/faq/generator-faq";
 import { FAQ } from "@/components/FAQ";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 // ASCII Art Font Mappings (simplified versions)
 const ASCII_FONTS = {
@@ -286,7 +287,7 @@ export default function AsciiGenerator() {
   }, []);
 
   // Get faqs
-  const faqs = asciiGeneratorFaqs;
+  const faqs: FaqType[]  = asciiGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">

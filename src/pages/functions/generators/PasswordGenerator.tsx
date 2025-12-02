@@ -27,6 +27,7 @@ import { Separator } from "@/components/ui/separator";
 import { FAQ } from "@/components/FAQ";
 import { passwordGeneratorFaqs } from "@/data/faq/generator-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 const LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
 const UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -160,7 +161,7 @@ export default function PasswordGenerator() {
   }, []);
 
   // Get Faqs
-  const faqs = passwordGeneratorFaqs;
+  const faqs: FaqType[]  = passwordGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">

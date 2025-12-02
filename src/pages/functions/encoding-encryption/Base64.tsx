@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FAQ } from "@/components/FAQ";
 import { base64Faqs } from "@/data/faq/encoding-encryption-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 export default function Base64() {
   // State
@@ -190,7 +191,7 @@ export default function Base64() {
   };
 
   // Get faqs
-  const faqs = base64Faqs;
+  const faqs: FaqType[]  = base64Faqs;
 
   return (
     <div className="p-3 sm:p-6">

@@ -38,6 +38,7 @@ import QRCodeLib from "qrcode";
 import { FAQ } from "@/components/FAQ";
 import { qrGeneratorFaqs } from "@/data/faq/generator-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 interface QRPreset {
   name: string;
@@ -264,7 +265,7 @@ export default function QrGenerator() {
   };
 
   // Get faqs
-  const faqs = qrGeneratorFaqs;
+  const faqs: FaqType[]  = qrGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">

@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FAQ } from "@/components/FAQ";
 import { rot13Faqs } from "@/data/faq/encoding-encryption-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 export default function ROT13() {
   const [inputText, setInputText] = useState("");
@@ -131,7 +132,7 @@ export default function ROT13() {
   };
 
   // Get faqs
-  const faqs = rot13Faqs;
+  const faqs: FaqType[]  = rot13Faqs;
 
   return (
     <div className="p-3 sm:p-6">

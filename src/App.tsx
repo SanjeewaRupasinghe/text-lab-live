@@ -38,7 +38,7 @@ import JsonFormatter from "./pages/functions/conversion-tools/JsonFormatter";
 import XmlFormatter from "./pages/functions/conversion-tools/XmlFormatter";
 import HtmlEntities from "./pages/functions/conversion-tools/HtmlEntities";
 import TabsSpaces from "./pages/functions/conversion-tools/TabsSpaces";
-import NewlineConverter from "./pages/functions/NewlineConverter";
+import NewlineConverter from "./pages/functions/text-transformation/NewlineConverter";
 
 // Encoding, Decoding & Encryption
 import Base64 from "./pages/functions/encoding-encryption/Base64";

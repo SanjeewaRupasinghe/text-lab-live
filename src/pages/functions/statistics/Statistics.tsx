@@ -31,6 +31,7 @@ import {
 import { FAQ } from "@/components/FAQ";
 import { statisticsFaqs } from "@/data/faq/statistics-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 export default function Statistics() {
   // State
@@ -357,7 +358,7 @@ Text Statistics:
   };
 
   // Get faqs
-  const faqs = statisticsFaqs;
+  const faqs: FaqType[]  = statisticsFaqs;
 
   return (
     <div className="p-3 sm:p-6">

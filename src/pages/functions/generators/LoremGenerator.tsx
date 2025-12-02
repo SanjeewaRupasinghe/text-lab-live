@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FAQ } from "@/components/FAQ";
 import { loremGeneratorFaqs } from "@/data/faq/generator-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 const LOREM_WORDS = [
   "lorem",
@@ -278,7 +279,7 @@ export default function LoremGenerator() {
   }, []);
 
   // Get faqs
-  const faqs = loremGeneratorFaqs;
+  const faqs: FaqType[]  = loremGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">

@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FAQ } from "@/components/FAQ";
 import { caesarCipherFaqs } from "@/data/faq/encoding-encryption-faq";
 import { copyToClipboard, toggleBookmark } from "@/lib/textEditorUtils";
+import { FaqType } from "@/types/faq.type";
 
 export default function CaesarCipher() {
   const [inputText, setInputText] = useState("");
@@ -186,7 +187,7 @@ export default function CaesarCipher() {
   const quickShiftButtons = [1, 3, 5, 7, 13, 25];
 
   // Get faqs
-  const faqs = caesarCipherFaqs;
+  const faqs: FaqType[]  = caesarCipherFaqs;
 
   return (
     <div className="p-3 sm:p-6">
