@@ -161,7 +161,7 @@ export default function PasswordGenerator() {
   }, []);
 
   // Get Faqs
-  const faqs: FaqType[]  = passwordGeneratorFaqs;
+  const faqs: FaqType[] = passwordGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
@@ -179,9 +179,9 @@ export default function PasswordGenerator() {
               className="flex-shrink-0"
             >
               {isBookmarked ? (
-                <Star className="w-5 h-5 fill-current text-yellow-500" />
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
               ) : (
-                <StarOff className="w-5 h-5" />
+                <StarOff className="w-5 h-5 animate-bounce" />
               )}
             </Button>
           </div>

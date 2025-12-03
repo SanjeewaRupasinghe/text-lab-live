@@ -186,7 +186,7 @@ export default function SampleDataGenerator() {
   }, []);
 
   // Get faqs
-  const faqs: FaqType[]  = sampleDataGeneratorFaqs;
+  const faqs: FaqType[] = sampleDataGeneratorFaqs;
 
   return (
     <div className="container max-w-6xl mx-auto p-4 space-y-6">
@@ -205,9 +205,9 @@ export default function SampleDataGenerator() {
                 className="flex-shrink-0"
               >
                 {isBookmarked ? (
-                  <Star className="w-5 h-5 fill-current text-yellow-500" />
+                  <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
                 ) : (
-                  <StarOff className="w-5 h-5" />
+                  <StarOff className="w-5 h-5 animate-bounce" />
                 )}
               </Button>
             </div>

@@ -120,7 +120,7 @@ export const TextEditor = ({ title, description, example, transform, storageKey 
               <SplitSquareHorizontal className="w-5 h-5" />
             </Button>
             <Button variant="ghost" size="icon" onClick={toggleBookmark}>
-              {isBookmarked ? <Star className="w-5 h-5 fill-current text-yellow-500" /> : <StarOff className="w-5 h-5" />}
+              {isBookmarked ? <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" /> : <StarOff className="w-5 h-5 animate-bounce" />}
             </Button>
           </div>
         </div>

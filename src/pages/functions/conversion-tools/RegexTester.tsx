@@ -19,11 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Copy, Info } from "lucide-react";
+import { Copy, Info, Star, StarOff } from "lucide-react";
 import { toast } from "sonner";
 import { FAQ } from "@/components/FAQ";
 import { FaqType } from "@/types/faq.type";
 import { regexTesterFaqs } from "@/data/faq/conversion-tool-faq";
+import { toggleBookmark } from "@/lib/textEditorUtils";
 
 interface Match {
   match: string;
@@ -74,6 +75,7 @@ const RegexTester = () => {
   });
   const [matches, setMatches] = useState<Match[]>([]);
   const [error, setError] = useState<string>("");
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   // Get flags string
   const getFlagsString = () => {
@@ -196,6 +198,22 @@ const RegexTester = () => {
     toast.success("Regex pattern copied");
   };
 
+  // Check if current page is bookmarked
+  useEffect(() => {
+    const bookmarks = JSON.parse(
+      localStorage.getItem("text-transformer-bookmarks") || "[]"
+    );
+    const currentPath = window.location.pathname;
+    setIsBookmarked(bookmarks.includes(currentPath));
+  }, []);
+
+  // Handle bookmark
+  const handleBookmark = () => {
+    const newState = toggleBookmark(window.location.pathname);
+    setIsBookmarked(newState);
+    toast.success(newState ? "Bookmark added" : "Bookmark removed");
+  };
+
   // Get faqs
   const faqs: FaqType[] = regexTesterFaqs;
 
@@ -203,7 +221,21 @@ const RegexTester = () => {
     <div className="container mx-auto p-6 max-w-6xl">
       <Card>
         <CardHeader>
-          <CardTitle>Regex Tester</CardTitle>
+          <CardTitle className="flex justify-between items-center">
+            Regex Tester
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBookmark}
+              className="flex-shrink-0"
+            >
+              {isBookmarked ? (
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
+              ) : (
+                <StarOff className="w-5 h-5 animate-bounce" />
+              )}
+            </Button>
+          </CardTitle>
           <CardDescription>
             Test and build regular expression patterns with live matching
           </CardDescription>

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Copy, Search, Clock, Settings } from "lucide-react";
+import { Copy, Search, Clock, Settings, Star, StarOff } from "lucide-react";
 import { toast } from "sonner";
 import {
   Popover,
@@ -16,6 +16,7 @@ import { FAQ } from "@/components/FAQ";
 import { FaqType } from "@/types/faq.type";
 import { emojiPickerFaqs } from "@/data/faq/fun-creative-faqs";
 import { categories, emojiData } from "@/data/EmojiData";
+import { toggleBookmark } from "@/lib/textEditorUtils";
 
 const EmojiPicker = () => {
   // State
@@ -23,6 +24,7 @@ const EmojiPicker = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [recentEmojis, setRecentEmojis] = useState<string[]>([]);
   const [hiddenCategories, setHiddenCategories] = useState<string[]>([]);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   // Load recent emojis and hidden categories from localStorage on mount
   useEffect(() => {
@@ -82,20 +84,52 @@ const EmojiPicker = () => {
     saveRecentEmojis(newRecent);
   };
 
+  // Check if current page is bookmarked
+  useEffect(() => {
+    const bookmarks = JSON.parse(
+      localStorage.getItem("text-transformer-bookmarks") || "[]"
+    );
+    const currentPath = window.location.pathname;
+    setIsBookmarked(bookmarks.includes(currentPath));
+  }, []);
+
+  // Handle bookmark
+  const handleBookmark = () => {
+    const newState = toggleBookmark(window.location.pathname);
+    setIsBookmarked(newState);
+    toast.success(newState ? "Bookmark added" : "Bookmark removed");
+  };
+
   // FAQs
   const faqs: FaqType[] = emojiPickerFaqs;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-4 dark:text-white">
-            Emoji Picker
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Browse, search, and copy emojis. Your recently used emojis are saved
-            for quick access.
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-4 dark:text-white">
+              Emoji Picker
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Browse, search, and copy emojis. Your recently used emojis are
+              saved for quick access.
+            </p>
+          </div>
+          <div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBookmark}
+              className="flex-shrink-0"
+            >
+              {isBookmarked ? (
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
+              ) : (
+                <StarOff className="w-5 h-5 animate-bounce" />
+              )}
+            </Button>
+          </div>
         </div>
 
         <Card className="p-6">
