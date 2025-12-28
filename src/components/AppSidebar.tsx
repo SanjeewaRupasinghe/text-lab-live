@@ -393,9 +393,9 @@ export function AppSidebar() {
                                 }}
                               >
                                 {bookmarks.includes(func.path) ? (
-                                  <Star className="w-3 h-3 fill-current text-yellow-500" />
+                                  <Star className="w-3 h-3 fill-current text-yellow-500 animate-bounce" />
                                 ) : (
-                                  <StarOff className="w-3 h-3" />
+                                  <StarOff className="w-3 h-3 animate-bounce" />
                                 )}
                               </Button>
                             )}

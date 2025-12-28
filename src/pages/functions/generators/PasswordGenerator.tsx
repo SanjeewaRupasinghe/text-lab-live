@@ -164,11 +164,10 @@ export default function PasswordGenerator() {
   const faqs: FaqType[] = passwordGeneratorFaqs;
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container mx-auto p-3 px-10">
       <div className="mb-8">
         <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center">
-            <Shield className="w-6 h-6 text-primary" />
             <h1 className="text-3xl font-bold">Secure Password Generator</h1>
           </div>
           <div>

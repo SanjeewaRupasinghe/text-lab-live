@@ -287,7 +287,6 @@ export default function LoremGenerator() {
       <div className="mb-8">
         <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center">
-            <Type className="w-6 h-6 text-primary" />
             <h1 className="text-3xl font-bold">Text Generator</h1>
           </div>
           <div>

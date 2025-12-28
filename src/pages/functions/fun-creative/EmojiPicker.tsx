@@ -104,7 +104,7 @@ const EmojiPicker = () => {
   const faqs: FaqType[] = emojiPickerFaqs;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4">
+    <div className="container px-10">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 flex justify-between items-center">
           <div>
@@ -274,7 +274,7 @@ const EmojiPicker = () => {
                         key={index}
                         variant="ghost"
                         size="sm"
-                        className="text-2xl p-3 h-12 w-12 hover:bg-muted/50 group relative"
+                        className="text-2xl p-3 h-12 w-12 hover:bg-muted/50 hover:text-black dark:text-white group relative"
                         onClick={() => copyEmoji(emoji.emoji)}
                         title={emoji.name}
                       >
