@@ -1,8 +1,27 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.routes import router
+from app.config.database import Base, engine
 
-app = FastAPI()
+# Migrate BD
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="TextLab API", description="API for TextLab application", version="1.0.0"
+)
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(router)
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.get("/health")
+def health_check():
+    return {"status": "OK"}
