@@ -4,7 +4,7 @@ from app.routes import router
 from app.config.database import Base, engine
 
 # Migrate BD
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="TextLab API", description="API for TextLab application", version="1.0.0"

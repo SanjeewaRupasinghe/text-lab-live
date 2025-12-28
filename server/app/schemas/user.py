@@ -8,9 +8,11 @@ class UserRegister(BaseModel):
     password: str
 
     @field_validator("password")
-    def validate_password(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters long")
+    @classmethod
+    def validate_password(cls,v:str) ->str:
+        """Validate password doesn't exceed bcrypt's 72 byte limit"""
+        if len(v.encode("utf-8")) > 72:
+            raise ValueError("Password cannot exceed 72 bytes")
         return v
 
 

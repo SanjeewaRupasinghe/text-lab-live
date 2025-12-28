@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from jose import jwt
+import bcrypt
 
 from app.config.settings import get_settings
 
@@ -9,13 +10,20 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:
-    """Password maker using bcrypt."""
-    return pwd_context.hash(password)
+    """Hash password"""
+
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
+
+    return hashed.decode("utf-8")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+
+    return bcrypt.checkpw(
+        plain_password.encode("utf-8"), hashed_password.encode("utf-8")
+    )
 
 
 def create_token(
@@ -28,9 +36,9 @@ def create_token(
 
     # Handle token expiration
     if expires_delta:
-        expire = datetime.now(datetime.timezone.utc) + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(datetime.timezone.utc) + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
 
     to_encode.update({"exp": expire})
     encode_jwt = jwt.encode(
@@ -39,15 +47,15 @@ def create_token(
     return encode_jwt
 
 
-def verify_token(token: str) -> dict:
+def verify_token(token: str, token_type: str = "access") -> dict:
     """Verify and decode a JWT token."""
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-        email: str = payload.get("sub")
 
-        if email is None:
+        # Verify token type
+        if payload.get("type") != token_type:
             return None
 
         return payload
