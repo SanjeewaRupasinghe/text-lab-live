@@ -112,7 +112,7 @@ export const TextEditor = ({ title, description, example, transform, storageKey 
 
   return (
     <div className="p-3 sm:p-6">
-      <div className="mb-6">
+      <div className="mb-6 ms-4">
         <div className="flex items-start justify-between mb-2">
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">{title}</h1>
           <div className="flex gap-2">
@@ -120,7 +120,7 @@ export const TextEditor = ({ title, description, example, transform, storageKey 
               <SplitSquareHorizontal className="w-5 h-5" />
             </Button>
             <Button variant="ghost" size="icon" onClick={toggleBookmark}>
-              {isBookmarked ? <Star className="w-5 h-5 fill-current text-yellow-500" /> : <StarOff className="w-5 h-5" />}
+              {isBookmarked ? <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" /> : <StarOff className="w-5 h-5 animate-bounce" />}
             </Button>
           </div>
         </div>
@@ -136,27 +136,97 @@ export const TextEditor = ({ title, description, example, transform, storageKey 
       {comparisonView ? (
         <Card>
           <CardContent className="p-6">
-            <ResizablePanelGroup direction="horizontal" className="min-h-[500px] rounded-lg border">
-              <ResizablePanel defaultSize={50} minSize={30}>
-                <div className="h-full flex flex-col p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium">Input</label>
-                    <div className="flex gap-2"><Badge variant="outline" className="text-xs">{inputStats.chars} chars</Badge><Badge variant="outline" className="text-xs">{inputStats.words} words</Badge></div>
-                  </div>
-                  <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="Paste or type..." className="flex-1 w-full p-4 rounded-md border bg-background resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+             {/* Desktop: Resizable Panels */}
+      <div className="hidden md:block">
+        <ResizablePanelGroup direction="horizontal" className="min-h-[500px] rounded-lg border">
+          <ResizablePanel defaultSize={50} minSize={30}>
+            <div className="h-full flex flex-col p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium">Input</label>
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="text-xs">{inputStats.chars} chars</Badge>
+                  <Badge variant="outline" className="text-xs">{inputStats.words} words</Badge>
                 </div>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={50} minSize={30}>
-                <div className="h-full flex flex-col p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium">Output</label>
-                    <div className="flex gap-2"><Badge variant="outline" className="text-xs">{outputStats.chars} chars</Badge><Badge variant="outline" className="text-xs">{outputStats.words} words</Badge><Button variant="outline" size="sm" onClick={handleCopy} disabled={!outputText}><Copy className="w-3 h-3 mr-1" />Copy</Button><Button variant="outline" size="sm" onClick={handleDownload} disabled={!outputText}><Download className="w-3 h-3 mr-1" />Download</Button></div>
-                  </div>
-                  <textarea value={outputText} readOnly placeholder="Output..." className="flex-1 w-full p-4 rounded-md border bg-muted resize-none font-mono text-sm" />
+              </div>
+              <textarea 
+                value={inputText} 
+                onChange={(e) => setInputText(e.target.value)} 
+                placeholder="Paste or type..." 
+                className="flex-1 w-full p-4 rounded-md border bg-background resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring" 
+              />
+            </div>
+          </ResizablePanel>
+          
+          <ResizableHandle withHandle />
+          
+          <ResizablePanel defaultSize={50} minSize={30}>
+            <div className="h-full flex flex-col p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium">Output</label>
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="text-xs">{outputStats.chars} chars</Badge>
+                  <Badge variant="outline" className="text-xs">{outputStats.words} words</Badge>
+                  <Button variant="outline" size="sm" onClick={handleCopy} disabled={!outputText}>
+                    <Copy className="w-3 h-3 mr-1" />Copy
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleDownload} disabled={!outputText}>
+                    <Download className="w-3 h-3 mr-1" />Download
+                  </Button>
                 </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
+              </div>
+              <textarea 
+                value={outputText} 
+                readOnly 
+                placeholder="Output..." 
+                className="flex-1 w-full p-4 rounded-md border bg-muted resize-none font-mono text-sm" 
+              />
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
+
+      {/* Mobile/Tablet: Stacked Layout */}
+      <div className="md:hidden flex flex-col min-h-[500px] rounded-lg border">
+        {/* Input Section */}
+        <div className="flex-1 flex flex-col p-4 border-b">
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-sm font-medium">Input</label>
+            <div className="flex gap-2">
+              <Badge variant="outline" className="text-xs">{inputStats.chars} chars</Badge>
+              <Badge variant="outline" className="text-xs">{inputStats.words} words</Badge>
+            </div>
+          </div>
+          <textarea 
+            value={inputText} 
+            onChange={(e) => setInputText(e.target.value)} 
+            placeholder="Paste or type..." 
+            className="flex-1 w-full p-4 rounded-md border bg-background resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring" 
+          />
+        </div>
+
+        {/* Output Section */}
+        <div className="flex-1 flex flex-col p-4">
+          <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <label className="text-sm font-medium">Output</label>
+            <div className="flex gap-2 flex-wrap">
+              <Badge variant="outline" className="text-xs">{outputStats.chars} chars</Badge>
+              <Badge variant="outline" className="text-xs">{outputStats.words} words</Badge>
+              <Button variant="outline" size="sm" onClick={handleCopy} disabled={!outputText}>
+                <Copy className="w-3 h-3 mr-1" />Copy
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleDownload} disabled={!outputText}>
+                <Download className="w-3 h-3 mr-1" />Download
+              </Button>
+            </div>
+          </div>
+          <textarea 
+            value={outputText} 
+            readOnly 
+            placeholder="Output..." 
+            className="flex-1 w-full p-4 rounded-md border bg-muted resize-none font-mono text-sm" 
+          />
+        </div>
+      </div>
             <div className="flex justify-center gap-6 mt-4 text-sm text-muted-foreground"><div>Lines: {inputStats.lines} → {outputStats.lines}</div><div>Sentences: {inputStats.sentences} → {outputStats.sentences}</div></div>
             <div className="flex justify-center mt-4"><Button variant="outline" onClick={handleReset}><RotateCcw className="w-4 h-4 mr-2" />Reset</Button></div>
           </CardContent>

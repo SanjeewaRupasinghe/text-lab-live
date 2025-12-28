@@ -84,7 +84,7 @@ const App = () => {
               <AppSidebar />
 
               {/* Main Content */}
-              <div className="flex-1 flex flex-col">
+              <div className="ms-3 flex-1 flex flex-col">
                 {/* Global Header with Sidebar Trigger */}
                 <header className="h-12 flex items-center border-b bg-background px-4">
                   <SidebarTrigger />

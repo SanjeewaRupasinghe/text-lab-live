@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,11 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
+import { Copy, Star, StarOff } from "lucide-react";
 import { toast } from "sonner";
 import { FAQ } from "@/components/FAQ";
 import { FaqType } from "@/types/faq.type";
 import { diffCheckerFaqs } from "@/data/faq/conversion-tool-faq";
+import { toggleBookmark } from "@/lib/textEditorUtils";
 
 interface DiffLine {
   type: "equal" | "insert" | "delete";
@@ -29,6 +30,7 @@ const DiffChecker = () => {
   const [text2, setText2] = useState("");
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
   const [ignoreCase, setIgnoreCase] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   // Process Line
   const preprocessLine = (line: string): string => {
@@ -145,6 +147,22 @@ const DiffChecker = () => {
     toast.success("Diff copied to clipboard");
   };
 
+  // Check if current page is bookmarked
+  useEffect(() => {
+    const bookmarks = JSON.parse(
+      localStorage.getItem("text-transformer-bookmarks") || "[]"
+    );
+    const currentPath = window.location.pathname;
+    setIsBookmarked(bookmarks.includes(currentPath));
+  }, []);
+
+  // Handle bookmark
+  const handleBookmark = () => {
+    const newState = toggleBookmark(window.location.pathname);
+    setIsBookmarked(newState);
+    toast.success(newState ? "Bookmark added" : "Bookmark removed");
+  };
+
   // FAQs
   const faqs: FaqType[] = diffCheckerFaqs;
 
@@ -152,7 +170,21 @@ const DiffChecker = () => {
     <div className="container mx-auto p-6 max-w-7xl">
       <Card>
         <CardHeader>
-          <CardTitle>Diff Checker</CardTitle>
+          <CardTitle className="flex justify-between items-center">
+            Diff Checker
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBookmark}
+              className="flex-shrink-0"
+            >
+              {isBookmarked ? (
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
+              ) : (
+                <StarOff className="w-5 h-5 animate-bounce" />
+              )}
+            </Button>
+          </CardTitle>
           <CardDescription>
             Compare two text blocks with visual highlighting of differences
           </CardDescription>

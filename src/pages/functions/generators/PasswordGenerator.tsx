@@ -161,14 +161,13 @@ export default function PasswordGenerator() {
   }, []);
 
   // Get Faqs
-  const faqs: FaqType[]  = passwordGeneratorFaqs;
+  const faqs: FaqType[] = passwordGeneratorFaqs;
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container mx-auto p-3 px-10">
       <div className="mb-8">
         <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center">
-            <Shield className="w-6 h-6 text-primary" />
             <h1 className="text-3xl font-bold">Secure Password Generator</h1>
           </div>
           <div>
@@ -179,9 +178,9 @@ export default function PasswordGenerator() {
               className="flex-shrink-0"
             >
               {isBookmarked ? (
-                <Star className="w-5 h-5 fill-current text-yellow-500" />
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
               ) : (
-                <StarOff className="w-5 h-5" />
+                <StarOff className="w-5 h-5 animate-bounce" />
               )}
             </Button>
           </div>

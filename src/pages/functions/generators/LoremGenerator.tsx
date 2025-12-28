@@ -279,7 +279,7 @@ export default function LoremGenerator() {
   }, []);
 
   // Get faqs
-  const faqs: FaqType[]  = loremGeneratorFaqs;
+  const faqs: FaqType[] = loremGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
@@ -287,7 +287,6 @@ export default function LoremGenerator() {
       <div className="mb-8">
         <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center">
-            <Type className="w-6 h-6 text-primary" />
             <h1 className="text-3xl font-bold">Text Generator</h1>
           </div>
           <div>
@@ -298,9 +297,9 @@ export default function LoremGenerator() {
               className="flex-shrink-0"
             >
               {isBookmarked ? (
-                <Star className="w-5 h-5 fill-current text-yellow-500" />
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
               ) : (
-                <StarOff className="w-5 h-5" />
+                <StarOff className="w-5 h-5 animate-bounce" />
               )}
             </Button>
           </div>

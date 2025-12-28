@@ -355,7 +355,7 @@ export default function MorseCode() {
   };
 
   // Get faqs
-  const faqs: FaqType[]  = morseCodeFaqs;
+  const faqs: FaqType[] = morseCodeFaqs;
 
   return (
     <div className="p-3 sm:p-6">
@@ -372,9 +372,9 @@ export default function MorseCode() {
             className="flex-shrink-0"
           >
             {isBookmarked ? (
-              <Star className="w-5 h-5 fill-current text-yellow-500" />
+              <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
             ) : (
-              <StarOff className="w-5 h-5" />
+              <StarOff className="w-5 h-5 animate-bounce" />
             )}
           </Button>
         </div>

@@ -1,5 +1,11 @@
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -7,11 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeftRight, Copy, Download } from "lucide-react";
+import { ArrowLeftRight, Copy, Download, Star, StarOff } from "lucide-react";
 import { toast } from "sonner";
 import { FAQ } from "@/components/FAQ";
 import { FaqType } from "@/types/faq.type";
 import { csvJsonConverterFaqs } from "@/data/faq/conversion-tool-faq";
+import { toggleBookmark } from "@/lib/textEditorUtils";
 
 const CsvJsonConverter = () => {
   // States
@@ -22,22 +29,23 @@ const CsvJsonConverter = () => {
   const [prettyPrint, setPrettyPrint] = useState(true);
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const parseCsv = (csv: string): any[] => {
-    const lines = csv.trim().split('\n');
+    const lines = csv.trim().split("\n");
     // Validate
     if (lines.length === 0) return [];
 
     const parseRow = (row: string): string[] => {
       // Variables
       const result: string[] = [];
-      let current = '';
+      let current = "";
       let inQuotes = false;
 
       // Loop
       for (let i = 0; i < row.length; i++) {
         const char = row[i];
-        
+
         if (char === '"') {
           if (inQuotes && row[i + 1] === '"') {
             // Append
@@ -50,13 +58,13 @@ const CsvJsonConverter = () => {
         } else if (char === delimiter && !inQuotes) {
           // Push
           result.push(current.trim());
-          current = '';
+          current = "";
         } else {
           // Append
           current += char;
         }
       }
-      
+
       // Push
       result.push(current.trim());
       return result;
@@ -67,17 +75,17 @@ const CsvJsonConverter = () => {
 
     if (hasHeaders && rows.length > 0) {
       const headers = rows[0];
-      return rows.slice(1).map(row => {
+      return rows.slice(1).map((row) => {
         // With headers
         const obj: any = {};
         headers.forEach((header, idx) => {
-          obj[header] = row[idx] || '';
+          obj[header] = row[idx] || "";
         });
         return obj;
       });
     } else {
       // Without headers
-      return rows.map(row => {
+      return rows.map((row) => {
         const obj: any = {};
         row.forEach((value, idx) => {
           obj[`column_${idx + 1}`] = value;
@@ -99,10 +107,10 @@ const CsvJsonConverter = () => {
 
       // Parse
       const data = parseCsv(csvInput);
-      const json = prettyPrint 
+      const json = prettyPrint
         ? JSON.stringify(data, null, 2)
         : JSON.stringify(data);
-      
+
       // Set
       setOutput(json);
       setError("");
@@ -126,7 +134,7 @@ const CsvJsonConverter = () => {
 
       // Parse
       const data = JSON.parse(jsonInput);
-      
+
       // Validate
       if (!Array.isArray(data)) {
         throw new Error("JSON must be an array of objects");
@@ -140,29 +148,31 @@ const CsvJsonConverter = () => {
       }
 
       // Get all unique keys
-      const keys = Array.from(
-        new Set(data.flatMap(obj => Object.keys(obj)))
-      );
+      const keys = Array.from(new Set(data.flatMap((obj) => Object.keys(obj))));
 
       // Escape value
       const escapeValue = (value: any): string => {
-        const str = String(value ?? '');
-        if (str.includes(delimiter) || str.includes('"') || str.includes('\n')) {
+        const str = String(value ?? "");
+        if (
+          str.includes(delimiter) ||
+          str.includes('"') ||
+          str.includes("\n")
+        ) {
           return `"${str.replace(/"/g, '""')}"`;
         }
         return str;
       };
 
-      let csv = '';
-      
+      let csv = "";
+
       if (hasHeaders) {
-        csv += keys.map(escapeValue).join(delimiter) + '\n';
+        csv += keys.map(escapeValue).join(delimiter) + "\n";
       }
 
       // Add rows
-      csv += data.map(row => 
-        keys.map(key => escapeValue(row[key])).join(delimiter)
-      ).join('\n');
+      csv += data
+        .map((row) => keys.map((key) => escapeValue(row[key])).join(delimiter))
+        .join("\n");
 
       // Set
       setOutput(csv);
@@ -183,14 +193,30 @@ const CsvJsonConverter = () => {
 
   // Download output
   const downloadOutput = (filename: string) => {
-    const blob = new Blob([output], { type: 'text/plain' });
+    const blob = new Blob([output], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = filename;
     link.click();
     URL.revokeObjectURL(url);
     toast.success("Downloaded");
+  };
+
+  // Check if current page is bookmarked
+  useEffect(() => {
+    const bookmarks = JSON.parse(
+      localStorage.getItem("text-transformer-bookmarks") || "[]"
+    );
+    const currentPath = window.location.pathname;
+    setIsBookmarked(bookmarks.includes(currentPath));
+  }, []);
+
+  // Handle bookmark
+  const handleBookmark = () => {
+    const newState = toggleBookmark(window.location.pathname);
+    setIsBookmarked(newState);
+    toast.success(newState ? "Bookmark added" : "Bookmark removed");
   };
 
   // FAQs
@@ -200,8 +226,24 @@ const CsvJsonConverter = () => {
     <div className="container mx-auto p-6 max-w-6xl">
       <Card>
         <CardHeader>
-          <CardTitle>CSV ↔ JSON Converter</CardTitle>
-          <CardDescription>Transform between CSV and JSON formats with customizable options</CardDescription>
+          <CardTitle className="flex justify-between items-center">
+            CSV ↔ JSON Converter
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBookmark}
+              className="flex-shrink-0"
+            >
+              {isBookmarked ? (
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
+              ) : (
+                <StarOff className="w-5 h-5 animate-bounce" />
+              )}
+            </Button>
+          </CardTitle>
+          <CardDescription>
+            Transform between CSV and JSON formats with customizable options
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <Tabs defaultValue="csv-to-json" className="w-full">
@@ -217,7 +259,10 @@ const CsvJsonConverter = () => {
                 <div className="flex flex-wrap gap-6 p-4 bg-muted rounded-lg">
                   {/* Delimiter */}
                   <div className="flex items-center gap-2">
-                    <Label htmlFor="csv-delimiter" className="text-sm whitespace-nowrap">
+                    <Label
+                      htmlFor="csv-delimiter"
+                      className="text-sm whitespace-nowrap"
+                    >
                       Delimiter:
                     </Label>
                     <Input
@@ -235,9 +280,14 @@ const CsvJsonConverter = () => {
                     <Checkbox
                       id="csv-has-headers"
                       checked={hasHeaders}
-                      onCheckedChange={(checked) => setHasHeaders(checked as boolean)}
+                      onCheckedChange={(checked) =>
+                        setHasHeaders(checked as boolean)
+                      }
                     />
-                    <Label htmlFor="csv-has-headers" className="text-sm cursor-pointer">
+                    <Label
+                      htmlFor="csv-has-headers"
+                      className="text-sm cursor-pointer"
+                    >
                       First row is header
                     </Label>
                   </div>
@@ -248,9 +298,14 @@ const CsvJsonConverter = () => {
                     <Checkbox
                       id="csv-pretty-print"
                       checked={prettyPrint}
-                      onCheckedChange={(checked) => setPrettyPrint(checked as boolean)}
+                      onCheckedChange={(checked) =>
+                        setPrettyPrint(checked as boolean)
+                      }
                     />
-                    <Label htmlFor="csv-pretty-print" className="text-sm cursor-pointer">
+                    <Label
+                      htmlFor="csv-pretty-print"
+                      className="text-sm cursor-pointer"
+                    >
                       Pretty print JSON
                     </Label>
                   </div>
@@ -283,7 +338,10 @@ const CsvJsonConverter = () => {
                 <div className="flex flex-wrap gap-6 p-4 bg-muted rounded-lg">
                   <div className="flex items-center gap-2">
                     {/* Delimiter */}
-                    <Label htmlFor="json-delimiter" className="text-sm whitespace-nowrap">
+                    <Label
+                      htmlFor="json-delimiter"
+                      className="text-sm whitespace-nowrap"
+                    >
                       Delimiter:
                     </Label>
                     <Input
@@ -301,9 +359,14 @@ const CsvJsonConverter = () => {
                     <Checkbox
                       id="json-has-headers"
                       checked={hasHeaders}
-                      onCheckedChange={(checked) => setHasHeaders(checked as boolean)}
+                      onCheckedChange={(checked) =>
+                        setHasHeaders(checked as boolean)
+                      }
                     />
-                    <Label htmlFor="json-has-headers" className="text-sm cursor-pointer">
+                    <Label
+                      htmlFor="json-has-headers"
+                      className="text-sm cursor-pointer"
+                    >
                       Include header row
                     </Label>
                   </div>
@@ -328,7 +391,6 @@ const CsvJsonConverter = () => {
                   Convert JSON to CSV
                 </Button>
                 {/* END Convert Button */}
-
               </div>
             </TabsContent>
           </Tabs>
@@ -351,14 +413,16 @@ const CsvJsonConverter = () => {
                     <Copy className="w-4 h-4 mr-2" />
                     Copy
                   </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={() => downloadOutput(
-                      output.startsWith('{') || output.startsWith('[') 
-                        ? 'output.json' 
-                        : 'output.csv'
-                    )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      downloadOutput(
+                        output.startsWith("{") || output.startsWith("[")
+                          ? "output.json"
+                          : "output.csv"
+                      )
+                    }
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download
@@ -372,11 +436,9 @@ const CsvJsonConverter = () => {
               />
               <div className="flex gap-2">
                 <Badge variant="outline">
-                  {output.split('\n').length} lines
+                  {output.split("\n").length} lines
                 </Badge>
-                <Badge variant="outline">
-                  {output.length} characters
-                </Badge>
+                <Badge variant="outline">{output.length} characters</Badge>
               </div>
             </div>
           )}
@@ -384,9 +446,9 @@ const CsvJsonConverter = () => {
         </CardContent>
       </Card>
 
-       {/* FAQ */}
-            <FAQ faqs={faqs} />
-            {/* END FAQ */}
+      {/* FAQ */}
+      <FAQ faqs={faqs} />
+      {/* END FAQ */}
     </div>
   );
 };

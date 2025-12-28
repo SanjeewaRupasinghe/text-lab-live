@@ -3,6 +3,7 @@ import { TextEditor } from "@/components/TextEditor";
 import { FAQ } from "@/components/FAQ";
 import { FaqType } from "@/types/faq.type";
 import { numberLinesFaqs } from "@/data/faq/text-formatting-faq";
+import { ListOrdered, Logs } from "lucide-react";
 
 const NumberLines = () => {
   const [startNumber, setStartNumber] = useState(1);
@@ -29,9 +30,9 @@ const NumberLines = () => {
   const faqs: FaqType[] = numberLinesFaqs;
 
   return (
-    <div className="container mx-auto p-3 sm:p-6 max-w-6xl">
+    <div className="container mx-auto p-3">
       <div className="mb-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:gap-4 mb-4">
+        <div className="ms-4 flex flex-col gap-4 sm:flex-row sm:gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium mb-2">Format:</label>
             <div className="flex gap-2">
@@ -40,10 +41,11 @@ const NumberLines = () => {
                 onClick={() => setFormat("number")}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                   format === "number"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80"
+                    ? "bg-primary text-primary-foreground flex"
+                    : "bg-muted hover:bg-muted/80 flex"
                 }`}
               >
+                <ListOrdered className="mr-2" />
                 Numbers
               </button>
               {/* END Number format */}
@@ -53,10 +55,11 @@ const NumberLines = () => {
                 onClick={() => setFormat("bullet")}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                   format === "bullet"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80"
+                    ? "bg-primary text-primary-foreground flex"
+                    : "bg-muted hover:bg-muted/80 flex"
                 }`}
               >
+                <Logs className="mr-2" />
                 Bullets
               </button>
               {/* END Bullet format */}

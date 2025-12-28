@@ -187,7 +187,7 @@ export default function CaesarCipher() {
   const quickShiftButtons = [1, 3, 5, 7, 13, 25];
 
   // Get faqs
-  const faqs: FaqType[]  = caesarCipherFaqs;
+  const faqs: FaqType[] = caesarCipherFaqs;
 
   return (
     <div className="p-3 sm:p-6">
@@ -204,9 +204,9 @@ export default function CaesarCipher() {
             className="flex-shrink-0"
           >
             {isBookmarked ? (
-              <Star className="w-5 h-5 fill-current text-yellow-500" />
+              <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
             ) : (
-              <StarOff className="w-5 h-5" />
+              <StarOff className="w-5 h-5 animate-bounce" />
             )}
           </Button>
         </div>
@@ -316,7 +316,6 @@ export default function CaesarCipher() {
             </Button>
           </div>
           {/* END Special */}
-
         </div>
       </div>
       {/* Controls */}

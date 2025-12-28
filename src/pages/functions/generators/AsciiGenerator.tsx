@@ -287,7 +287,7 @@ export default function AsciiGenerator() {
   }, []);
 
   // Get faqs
-  const faqs: FaqType[]  = asciiGeneratorFaqs;
+  const faqs: FaqType[] = asciiGeneratorFaqs;
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
@@ -305,9 +305,9 @@ export default function AsciiGenerator() {
               className="flex-shrink-0"
             >
               {isBookmarked ? (
-                <Star className="w-5 h-5 fill-current text-yellow-500" />
+                <Star className="w-5 h-5 fill-current text-yellow-500 animate-bounce" />
               ) : (
-                <StarOff className="w-5 h-5" />
+                <StarOff className="w-5 h-5 animate-bounce" />
               )}
             </Button>
           </div>

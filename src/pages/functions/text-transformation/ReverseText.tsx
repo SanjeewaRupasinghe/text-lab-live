@@ -40,8 +40,8 @@ const ReverseText = () => {
   return (
     <>
       {/* Set Type */}
-      <div className="mb-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-4 mb-4">
+      <div className="ms-4 p-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-4">
           <label className="block text-sm font-medium">Encoding Type:</label>
           <div className="flex gap-2">
             {/* Encode Button */}

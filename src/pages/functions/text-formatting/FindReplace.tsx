@@ -44,9 +44,9 @@ const FindReplace = () => {
   const faqs: FaqType[] = findReplaceFaqs;
 
   return (
-    <div className="container mx-auto p-3 sm:p-6 max-w-6xl">
+    <div className="container mx-auto p-3">
       <div className="mb-6">
-        <div className="grid gap-4 sm:grid-cols-2 mb-4">
+        <div className="ms-4 grid gap-4 sm:grid-cols-2 mb-4">
           {/* Find Text */}
           <div>
             <label className="block text-sm font-medium mb-2">Find Text:</label>
@@ -76,7 +76,7 @@ const FindReplace = () => {
           {/* END Replace Text */}
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 mb-4">
+        <div className="ms-4 flex flex-col gap-2 sm:flex-row sm:gap-4 mb-4">
           {/* Case Sensitive */}
           <label className="flex items-center gap-2">
             <input
