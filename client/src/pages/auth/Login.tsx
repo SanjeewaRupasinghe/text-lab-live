@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore, MOCK_CREDENTIALS } from "@/stores/authStore";
+import { useAuthStore} from "@/stores/authStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,22 +31,11 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
+        <CardHeader className="text-center">
           <CardTitle>Admin Login</CardTitle>
           <CardDescription>Sign in to access the admin dashboard</CardDescription>
         </CardHeader>
         <CardContent>
-          <Alert className="mb-6">
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Test Credentials:</strong>
-              <br />
-              Username: <code className="text-sm bg-muted px-1 py-0.5 rounded">{MOCK_CREDENTIALS.username}</code>
-              <br />
-              Password: <code className="text-sm bg-muted px-1 py-0.5 rounded">{MOCK_CREDENTIALS.password}</code>
-            </AlertDescription>
-          </Alert>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>

@@ -5,18 +5,10 @@ import { persist } from "zustand/middleware";
 interface AuthState {
   isAuthenticated: boolean;
   username: string | null;
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
-  changePassword: (oldPassword: string, newPassword: string) => boolean;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
 }
-
-// Mock credentials - displayed on login page
-export const MOCK_CREDENTIALS = {
-  username: "a@mail.com",
-  password: "password",
-};
-
-let currentPassword = MOCK_CREDENTIALS.password;
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -25,27 +17,37 @@ export const useAuthStore = create<AuthState>()(
       username: null,
 
       login: async (username: string, password: string): Promise<boolean> => {
-        const response = await axiosClient.post("/auth/login", {
-          email: username,
-          password: password,
-        });
+        const response = await axiosClient.post<{ token: string }>(
+          "/auth/login",
+          {
+            email: username,
+            password: password,
+          }
+        );
         if (response.status !== 200) {
           // Login unsuccessful
           console.error("Login failed:", response.data);
           return false;
         }
 
+        // Login successful
+        localStorage.setItem("authToken", response.data.token);
         set({ isAuthenticated: true, username });
         return true;
       },
-      logout: () => {
+      logout: async () => {
+        const response = await axiosClient.post("/auth/logout");
+        if (response.status !== 200) {
+          // Logout unsuccessful
+          console.error("Logout failed:", response.data);
+          return false;
+        }
+
+        // Logout successful
         set({ isAuthenticated: false, username: null });
       },
-      changePassword: (oldPassword: string, newPassword: string) => {
-        if (oldPassword === currentPassword) {
-          currentPassword = newPassword;
-          return true;
-        }
+      changePassword: async (oldPassword: string, newPassword: string) => {
+        // TODO: Implement password change logic
         return false;
       },
     }),
