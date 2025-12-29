@@ -1,5 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import axiosClient from "@/utilities/axiosClient";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -11,8 +12,8 @@ interface AuthState {
 
 // Mock credentials - displayed on login page
 export const MOCK_CREDENTIALS = {
-  username: 'admin',
-  password: 'admin123'
+  username: "a@mail.com",
+  password: "password",
 };
 
 let currentPassword = MOCK_CREDENTIALS.password;
@@ -22,12 +23,20 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       isAuthenticated: false,
       username: null,
-      login: (username: string, password: string) => {
-        if (username === MOCK_CREDENTIALS.username && password === currentPassword) {
-          set({ isAuthenticated: true, username });
-          return true;
+
+      login: async (username: string, password: string): Promise<boolean> => {
+        const response = await axiosClient.post("/auth/login", {
+          email: username,
+          password: password,
+        });
+        if (response.status !== 200) {
+          // Login unsuccessful
+          console.error("Login failed:", response.data);
+          return false;
         }
-        return false;
+
+        set({ isAuthenticated: true, username });
+        return true;
       },
       logout: () => {
         set({ isAuthenticated: false, username: null });
@@ -41,7 +50,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
     }
   )
 );

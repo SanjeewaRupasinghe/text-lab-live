@@ -15,10 +15,10 @@ const Login = () => {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const success = login(username, password);
+    const success = await login(username, password);
     
     if (success) {
       toast.success("Login successful");
@@ -27,7 +27,7 @@ const Login = () => {
       toast.error("Invalid credentials");
     }
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">

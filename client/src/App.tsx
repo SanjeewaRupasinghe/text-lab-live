@@ -93,7 +93,7 @@ const App = () => {
                 <main className="flex-1">
                   <Routes>
                     {/* Auth Routes */}
-                    <Route path="/auth/login" element={<Login />} />
+                    <Route path="/admin" element={<Login />} />
                     <Route
                       path="/auth/change-password"
                       element={
