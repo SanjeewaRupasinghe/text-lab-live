@@ -49,18 +49,15 @@ class CRUDBlog:
         total = len(blogs)
         return blogs, total
 
-    def update(self, db: Session, blog_id: int, obj_in: BlogCreate) -> Blog | None:
+    def update(self, db: Session, blog_db: Blog, blog_in: BlogCreate) -> Blog | None:
         """
         Update a blog post.
         """
-        blog = self.get_by_id(db, blog_id)
-        if not blog:
-            return None
-        for key, value in obj_in.model_dump(exclude_unset=True).items():
-            setattr(blog, key, value)
+        for key, value in blog_in.model_dump(exclude_unset=True).items():
+            setattr(blog_db, key, value)
         db.commit()
-        db.refresh(blog)
-        return blog
+        db.refresh(blog_db)
+        return blog_db
 
 
 blog = CRUDBlog()

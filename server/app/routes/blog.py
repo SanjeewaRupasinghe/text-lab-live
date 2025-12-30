@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.routes.auth import router
+from app.validation.blog import get_blog_by_id_or_404, get_blog_by_slug_or_404
+from app.models.blog import Blog
 from app.config.database import get_db
 from app.schemas.blog import BlogCreate, BlogList, BlogResponse
 from app.crud.blog import blog as blog_crud
@@ -29,43 +30,32 @@ def get_blogs(db: Session = Depends(get_db)):
 
 
 @router.get("/{blog_id}/id", response_model=BlogResponse)
-def get_blog_by_id(blog_id: int, db: Session = Depends(get_db)):
+def get_blog_by_id(
+    blog: Blog = Depends(get_blog_by_id_or_404),
+):
     """
     Get a blog post by ID.
     Only accessible to authenticated users.
     """
-    blog = blog_crud.get_by_id(db, blog_id)
-    if not blog:
-        # 404 - Blog not found
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found"
-        )
     return blog
 
+
 @router.get("/{slug}/slug", response_model=BlogResponse)
-def get_blog_by_slug(slug: str, db: Session = Depends(get_db)):
+def get_blog_by_slug(blog: Blog = Depends(get_blog_by_slug_or_404)):
     """
     Get a blog post by slug.
     """
-    blog = blog_crud.get_by_slug(db, slug)
-    if not blog:
-        # 404 - Blog not found
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found"
-        )
     return blog
 
 
 @router.put("/{blog_id}", response_model=BlogResponse)
-def update_blog(blog_id: int, blog: BlogCreate, db: Session = Depends(get_db)):
+def update_blog(
+    blog_in: BlogCreate,
+    blog: Blog = Depends(get_blog_by_id_or_404),
+    db: Session = Depends(get_db),
+):
     """
     Update a blog post by ID.
     Only accessible to authenticated users.
     """
-    updated_blog = blog_crud.update(db, blog_id, blog)
-    if not updated_blog:
-        # 404 - Blog not found
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found"
-        )
-    return updated_blog
+    return blog_crud.update(db=db, blog_db=blog, blog_in=blog_in)
