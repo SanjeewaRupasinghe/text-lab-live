@@ -1,16 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from app.api.deps import get_current_user
 from sqlalchemy.orm import Session
 
-from app.config.deps import get_current_user
+from app.crud import user as crud_user
 from app.models.user import User
-from app.config.database import get_db
-from app.schemas.user import TokenRefresh, TokenResponse, UserLogin, UserRegister
-from app.config.settings import get_settings
-from app.crud.user import user as crud_user
+from app.core.database import get_db
+from app.schemas.user import UserRegister, UserLogin, TokenResponse, TokenRefresh
+from app.core.security import hash_password
+
 
 router = APIRouter()
-
-settings = get_settings()
 
 
 @router.post("/register", response_model=dict)
@@ -26,7 +25,9 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
         )
 
     # Create new user
-    new_user = crud_user.create_user(db=db, user=user)
+    hashed_password = hash_password(user.password)
+    user.password = hashed_password
+    new_user = crud_user.create_user(db=db, obj_in=user)
 
     return {"message": "User created successfully", "user_id": new_user.id}
 

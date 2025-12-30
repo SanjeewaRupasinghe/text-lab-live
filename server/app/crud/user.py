@@ -4,22 +4,16 @@ from datetime import timedelta
 
 from app.schemas.user import TokenResponse, UserLogin, UserRegister
 from app.models.user import User
-from app.config.security import (
+from app.core.security import (
     hash_password,
     verify_password,
     create_token,
     verify_token,
 )
-from app.config.settings import get_settings
+from app.config import settings
 
 
 class CRUDUser:
-    def __init__(self):
-        """
-        Initialize CRUDUser with settings.
-        """
-        self.settings = get_settings()
-
     def create_user(self, db: Session, obj_in: UserRegister) -> User:
         """
         Create a new user in the database.
@@ -56,15 +50,13 @@ class CRUDUser:
             )
 
         # Access token
-        access_token_expires = timedelta(
-            minutes=self.settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_token(
             data={"sub": db_user.email}, expires_delta=access_token_expires
         )
 
         # Refresh token
-        refresh_token_expires = timedelta(days=self.settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        refresh_token_expires = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
         refresh_token = create_token(
             data={"sub": db_user.email},
             expires_delta=refresh_token_expires,

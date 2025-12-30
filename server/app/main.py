@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import router
-from app.config.database import Base, engine
+from app.api.v1.router import api_router
+from app.config import settings
+
 
 # Migrate BD
 # Base.metadata.create_all(bind=engine)
@@ -19,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
+app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health")

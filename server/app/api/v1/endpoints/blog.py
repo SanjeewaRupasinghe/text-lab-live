@@ -1,12 +1,10 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
-from app.config.deps import get_current_user
-from app.validation.blog import get_blog_by_id_or_404, get_blog_by_slug_or_404
-from app.models.blog import Blog
-from app.config.database import get_db
-from app.schemas.blog import BlogCreate, BlogList, BlogResponse
+from app.schemas.blog import BlogResponse, BlogList, BlogCreate
+from app.core.database import get_db
+from app.api.deps import get_blog_by_id_or_404, get_blog_by_slug_or_404, get_current_user
 from app.crud.blog import blog as blog_crud
+from app.models.blog import Blog
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 

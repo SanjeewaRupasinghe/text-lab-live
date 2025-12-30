@@ -1,12 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from app.config import settings
 
-from app.config.settings import get_settings
-
-
-# Get Settings
-settings = get_settings()
 
 # DB setup
 engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True, pool_recycle=3600)
