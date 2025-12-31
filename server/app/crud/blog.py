@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
+
 from app.models.blog import Blog
 from app.schemas.blog import BlogCreate
-
 
 
 class CRUDBlog:

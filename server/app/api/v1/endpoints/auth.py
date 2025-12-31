@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.api.deps import get_current_user
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.crud import user as crud_user
 from app.models.user import User
 from app.core.database import get_db
 from app.schemas.user import UserRegister, UserLogin, TokenResponse, TokenRefresh
 from app.core.security import hash_password
+from app.core.validators.user import validate_unique_email
 
 
 router = APIRouter()
@@ -17,12 +18,7 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
     """Register a new user."""
 
     # Validate Email
-    existing_user = db.query(User).filter(User.email == user.email).first()
-    if existing_user:
-        return HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this email already exists",
-        )
+    validate_unique_email(db=db, email=user.email)
 
     # Create new user
     hashed_password = hash_password(user.password)

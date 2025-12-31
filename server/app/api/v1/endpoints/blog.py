@@ -1,10 +1,16 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
 from app.schemas.blog import BlogResponse, BlogList, BlogCreate
 from app.core.database import get_db
-from app.api.deps import get_blog_by_id_or_404, get_blog_by_slug_or_404, get_current_user
+from app.api.deps import (
+    get_blog_by_id_or_404,
+    get_blog_by_slug_or_404,
+    get_current_user,
+)
 from app.crud.blog import blog as blog_crud
 from app.models.blog import Blog
-from sqlalchemy.orm import Session
+from app.core.validators.blog import validate_blog
 
 router = APIRouter()
 
@@ -19,6 +25,9 @@ def create_blog(
     Create a new blog post.
     Only accessible to authenticated users.
     """
+
+    # Validate blog data
+    validate_blog(db=db, slug=blog.slug)
 
     return blog_crud.create(db=db, obj_in=blog)
 
@@ -63,4 +72,8 @@ def update_blog(
     Update a blog post by ID.
     Only accessible to authenticated users.
     """
+
+    # Validate blog data
+    validate_blog(db=db, slug=blog_in.slug, exclude_id=blog.id)
+
     return blog_crud.update(db=db, blog_db=blog, blog_in=blog_in)
