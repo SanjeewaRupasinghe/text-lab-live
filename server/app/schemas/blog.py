@@ -46,8 +46,6 @@ class BlogBase(BaseModel):
     def validate_slug(cls, v):
         if not v:
             raise ValueError("Slug must not be empty")
-        if not re.match(r"^[a-z0-9\-]+$", v):
-            raise ValueError("Slug must be a proper slug")
         return v
 
     class Config:

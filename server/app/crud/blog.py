@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from slugify import slugify
 
 from app.models.blog import Blog
 from app.schemas.blog import BlogCreate
@@ -15,7 +16,7 @@ class CRUDBlog:
             status=obj_in.status,
             feature_image=obj_in.feature_image,
             faqs=obj_in.faqs,
-            slug=obj_in.slug,
+            slug=slugify(obj_in.slug),
             meta_title=obj_in.meta_title,
             meta_description=obj_in.meta_description,
             meta_keywords=obj_in.meta_keywords,
@@ -53,6 +54,11 @@ class CRUDBlog:
         """
         Update a blog post.
         """
+
+        # Confirm slug
+        if blog_in.slug != blog_db.slug:
+            blog_in.slug = slugify(blog_in.slug)
+
         for key, value in blog_in.model_dump(exclude_unset=True).items():
             setattr(blog_db, key, value)
         db.commit()

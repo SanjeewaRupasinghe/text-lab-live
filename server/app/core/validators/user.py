@@ -2,14 +2,14 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
-from app.crud import user as crud_user
+from app.models.user import User
 
 
 def validate_unique_email(
     db: Session, email: str, exclude_id: Optional[int] = None
 ) -> None:
     """Validate that the user email is unique."""
-    existing = crud_user.get_by_email(db=db, email=email)
+    existing = db.query(User).filter(User.email == email).first()
     if existing and existing.id != exclude_id:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,

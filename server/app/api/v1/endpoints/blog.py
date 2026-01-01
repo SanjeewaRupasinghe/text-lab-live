@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 
+from app.services.image_service import ImageUploadService
 from app.schemas.blog import BlogResponse, BlogList, BlogCreate
 from app.core.database import get_db
 from app.api.deps import (
@@ -77,3 +78,29 @@ def update_blog(
     validate_blog(db=db, slug=blog_in.slug, exclude_id=blog.id)
 
     return blog_crud.update(db=db, blog_db=blog, blog_in=blog_in)
+
+
+@router.post("/{blog_id}/image")
+def upload_blog_image(
+    blog: Blog = Depends(get_blog_by_id_or_404),
+    feature_image: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),  # Authenticated user
+):
+    """
+    Upload an image for a blog post.
+    """
+
+    # Upload and validate an image file.
+    new_feature_image_url = ImageUploadService.upload_image(file=feature_image)
+
+    # delete existing image if one exists
+    if blog.feature_image:
+        ImageUploadService.delete_image(blog.feature_image)
+
+    # Update the blog with the image URL
+    blog.feature_image = new_feature_image_url
+    db.commit()
+    db.refresh(blog)
+
+    return blog
