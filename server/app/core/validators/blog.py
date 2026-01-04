@@ -13,7 +13,7 @@ def validate_unique_slug(
     existing = crud_blog.get_by_slug(db=db, slug=slug)
     if existing and existing.id != exclude_id:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=[
                 {
                     "loc": ["body", "slug"],
