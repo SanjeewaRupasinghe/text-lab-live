@@ -1,6 +1,5 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 from datetime import datetime
-import re
 
 
 class BlogBase(BaseModel):
@@ -48,8 +47,7 @@ class BlogBase(BaseModel):
             raise ValueError("Slug must not be empty")
         return v
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class BlogCreate(BlogBase):
@@ -77,7 +75,6 @@ class BlogList(BaseModel):
     blogs: list[BlogResponse]
     total: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 __all__ = ["BlogCreate", "BlogResponse", "BlogList"]

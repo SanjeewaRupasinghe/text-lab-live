@@ -86,7 +86,7 @@ class CRUDUser:
             )
 
         access_token_expires = timedelta(
-            minutes=self.settings.ACCESS_TOKEN_EXPIRE_MINUTES
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
         access_token = create_token(
             data={"sub": email},

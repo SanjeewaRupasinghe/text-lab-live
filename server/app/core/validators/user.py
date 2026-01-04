@@ -12,7 +12,7 @@ def validate_unique_email(
     existing = db.query(User).filter(User.email == email).first()
     if existing and existing.id != exclude_id:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=[
                 {
                     "loc": ["body", "email"],
