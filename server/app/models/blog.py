@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime
-from datetime import datetime
+from datetime import datetime, timezone
 from pydantic import Field
 
 from app.core.database import Base
@@ -22,5 +22,9 @@ class Blog(Base):
     category = Column(String(255))
     tags = Column(Text)
     custom_json_ld = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )

@@ -1,12 +1,14 @@
+from fastapi import UploadFile
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 import pytest
 from fastapi.testclient import TestClient
 
+from tests.factories.factories import BlogFactory, ImageFactory
 from app.config import settings
 from app.main import app
 from app.core.database import Base, get_db
-from app.models import User
+from app.models import User, Blog
 from app.core.security import hash_password
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -16,6 +18,10 @@ engine = create_engine(
 )
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# ============================================
+# USER & AUTH FIXTURES
+# ============================================
 
 
 @pytest.fixture(scope="function")
@@ -84,3 +90,85 @@ def auth_token(client: TestClient, test_user, test_user_data):
 def auth_headers(auth_token):
     """Get authorization headers for testing"""
     return {"Authorization": f"Bearer {auth_token}"}
+
+
+# ============================================
+# USER & AUTH FIXTURES
+# ============================================
+
+# ============================================
+# BLOGS FIXTURES
+# ============================================
+
+
+@pytest.fixture
+def blog_data():
+    """Get test blog data using factory."""
+    return BlogFactory.create_data()
+
+
+@pytest.fixture
+def create_blog(db: Session, blog_data):
+    """Create a test blog in the database."""
+    return BlogFactory.create_blog(db=db, **blog_data)
+
+
+@pytest.fixture
+def multiple_published_blogs(db: Session, test_user, blog_data):
+    """Create published blogs"""
+
+    blogs = []
+    for _ in range(5):
+        blog_data = BlogFactory.create_data()
+        blog_data["status"] = "published"
+        blog = Blog(user_id=test_user.id, **blog_data)
+        db.add(blog)
+        blogs.append(blog)
+    db.commit()
+    return blogs
+
+
+@pytest.fixture
+def multiple_drafted_blogs(db: Session, test_user, blog_data):
+    """Create draft blogs"""
+
+    blogs = []
+    for _ in range(5):
+        blog_data = BlogFactory.create_data()
+        blog_data["status"] = "draft"
+        blog = Blog(user_id=test_user.id, **blog_data)
+        db.add(blog)
+        blogs.append(blog)
+    db.commit()
+    return blogs
+
+
+# ============================================
+# END BLOGS FIXTURES
+# ============================================
+
+
+# ============================================
+# IMAGE FIXTURES
+# ============================================
+
+
+@pytest.fixture
+def sample_image():
+    """Get sample image for testing."""
+    return ImageFactory.get_sample_image_bytes()
+
+
+@pytest.fixture
+def sample_upload_file(sample_image):
+    """Get sample upload file for testing."""
+    return UploadFile(
+        file=sample_image,
+        filename="test_image.png",
+        sisze=len(sample_image.getvalue()),
+    )
+
+
+# ============================================
+# END IMAGE FIXTURES
+# ============================================
