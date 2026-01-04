@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 import pytest
 
-from tests import PASSWORD
 from app.core.security import hash_password
 from app.models.user import User
 

@@ -1,5 +1,4 @@
 from app.config import settings
-from tests import PASSWORD
 
 
 class TestRegister:
@@ -16,7 +15,7 @@ class TestRegister:
         assert data["message"] == "User created successfully"
         assert "user_id" in data
 
-    def test_register_duplicate_email(self, client, test_user_data, test_user):
+    def test_register_duplicate_email(self, client, test_user, test_user_data):
         """Test registering with duplicate email fails"""
         response = client.post(
             f"{settings.API_V1_PREFIX}/auth/register", json=test_user_data
@@ -56,11 +55,11 @@ class TestRegister:
 class TestLogin:
     """Test user login"""
 
-    def test_login_success(self, client, test_user):
+    def test_login_success(self, client, test_user, test_user_data):
         """Test successful user login"""
         response = client.post(
             f"{settings.API_V1_PREFIX}/auth/login",
-            json={"email": test_user.email, "password": PASSWORD},
+            json={"email": test_user.email, "password": test_user_data["password"]},
         )
 
         assert response.status_code == 200
@@ -89,11 +88,11 @@ class TestLogin:
         assert response.status_code == 401
         assert "invalid" in str(response.json()).lower()
 
-    def test_login_returns_valid_tokens(self, client, test_user):
+    def test_login_returns_valid_tokens(self, client, test_user, test_user_data):
         """Test that login returns valid access and refresh tokens"""
         response = client.post(
             f"{settings.API_V1_PREFIX}/auth/login",
-            json={"email": test_user.email, "password": PASSWORD},
+            json={"email": test_user.email, "password": test_user_data["password"]},
         )
 
         token = response.json()["access_token"]
@@ -111,12 +110,12 @@ class TestLogin:
 class TestRefreshToken:
     """Test token refresh functionality"""
 
-    def test_refresh_token_success(self, client, test_user):
+    def test_refresh_token_success(self, client, test_user, test_user_data):
         """Test successful token refresh"""
         # First login to get refresh token
         login_response = client.post(
             f"{settings.API_V1_PREFIX}/auth/login",
-            json={"email": test_user.email, "password": PASSWORD},
+            json={"email": test_user.email, "password": test_user_data["password"]},
         )
 
         assert login_response.status_code == 200
@@ -165,12 +164,12 @@ class TestRefreshToken:
 class TestLogout:
     """Test logout endpoint behavior"""
 
-    def test_logout_success(self, client, test_user):
+    def test_logout_success(self, client, test_user, test_user_data):
         """Test successful logout"""
         # First login to get tokens
         login_response = client.post(
             f"{settings.API_V1_PREFIX}/auth/login",
-            json={"email": test_user.email, "password": PASSWORD},
+            json={"email": test_user.email, "password": test_user_data["password"]},
         )
 
         assert login_response.status_code == 200
@@ -205,12 +204,12 @@ class TestLogout:
 class TestGetCurrentUser:
     """Test get current user endpoint behavior"""
 
-    def test_get_current_user_success(self, client, test_user):
+    def test_get_current_user_success(self, client, test_user, test_user_data):
         """Test getting current user with valid token"""
         # First login to get tokens
         login_response = client.post(
             f"{settings.API_V1_PREFIX}/auth/login",
-            json={"email": test_user.email, "password": PASSWORD},
+            json={"email": test_user.email, "password": test_user_data["password"]},
         )
 
         assert login_response.status_code == 200

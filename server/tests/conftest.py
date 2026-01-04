@@ -3,7 +3,6 @@ from sqlalchemy.orm import sessionmaker, Session
 import pytest
 from fastapi.testclient import TestClient
 
-from tests import PASSWORD
 from app.config import settings
 from app.main import app
 from app.core.database import Base, get_db
@@ -51,7 +50,7 @@ def client(db: Session):
 
 @pytest.fixture
 def test_user_data():
-    return {"email": "test@example.com", "password": PASSWORD}
+    return {"email": "test@example.com", "password": "password123"}
 
 
 @pytest.fixture
@@ -69,13 +68,13 @@ def test_user(db: Session, test_user_data):
 
 
 @pytest.fixture
-def auth_token(client: TestClient,test_user):
+def auth_token(client: TestClient, test_user, test_user_data):
     """Get valid JWT token for testing"""
 
     response = client.post(
-            f"{settings.API_V1_PREFIX}/auth/login",
-            json={"email": test_user.email, "password": PASSWORD},
-        )
+        f"{settings.API_V1_PREFIX}/auth/login",
+        json={"email": test_user.email, "password": test_user_data["password"]},
+    )
 
     assert response.status_code == 200
     return response.json()["access_token"]
