@@ -121,7 +121,7 @@ def multiple_published_blogs(db: Session, test_user, blog_data):
     for _ in range(5):
         blog_data = BlogFactory.create_data()
         blog_data["status"] = "published"
-        blog = Blog(user_id=test_user.id, **blog_data)
+        blog = Blog(**blog_data)
         db.add(blog)
         blogs.append(blog)
     db.commit()
@@ -136,7 +136,7 @@ def multiple_drafted_blogs(db: Session, test_user, blog_data):
     for _ in range(5):
         blog_data = BlogFactory.create_data()
         blog_data["status"] = "draft"
-        blog = Blog(user_id=test_user.id, **blog_data)
+        blog = Blog(**blog_data)
         db.add(blog)
         blogs.append(blog)
     db.commit()

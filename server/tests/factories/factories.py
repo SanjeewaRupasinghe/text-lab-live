@@ -94,13 +94,9 @@ class ImageFactory:
     @staticmethod
     def get_sample_image_bytes():
         """Return sample image bytes for testing."""
-        # Minimal 1x1 PNG image (valid image file)
-        png_bytes = (
-            b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01"
-            b"\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x0cIDATx\x9cc\xf8\x0f\x00"
-            b"\x00\x01\x01\x00\x05\x18\r\xb6\x00\x00\x00\x00IEND\xaeB`\x82"
-        )
-        return png_bytes
+        with open("tests/image/test_image.webp", "rb") as f:
+            webp_bytes = f.read()
+        return webp_bytes
 
 
 # ============================================

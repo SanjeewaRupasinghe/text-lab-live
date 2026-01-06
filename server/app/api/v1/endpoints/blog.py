@@ -81,7 +81,7 @@ def update_blog(
 
 
 @router.post("/{blog_id}/image")
-def upload_blog_image(
+async def upload_blog_image(
     blog: Blog = Depends(get_blog_by_id_or_404),
     feature_image: UploadFile = File(...),
     db: Session = Depends(get_db),

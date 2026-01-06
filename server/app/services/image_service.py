@@ -47,7 +47,7 @@ class ImageUploadService:
                         "input": {},
                     }
                 ],
-            )
+            )        
 
     @staticmethod
     def validate_file_dimensions(image: Image.Image) -> None:
