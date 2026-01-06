@@ -47,7 +47,7 @@ class ImageUploadService:
                         "input": {},
                     }
                 ],
-            )        
+            )
 
     @staticmethod
     def validate_file_dimensions(image: Image.Image) -> None:
@@ -103,7 +103,7 @@ class ImageUploadService:
             )
 
     @staticmethod
-    def upload_image(file: UploadFile) -> str:
+    async def upload_image(file: UploadFile) -> str:
         """
         Upload and validate an image file.
         """
@@ -116,7 +116,7 @@ class ImageUploadService:
         ImageUploadService.validate_file_dimensions(image=image)
 
         # File size validation
-        ImageUploadService.validate_file_size(file=file)
+        await ImageUploadService.validate_file_size(file=file)
 
         # Create upload directory if it doesn't exist
         Path(UPLOAD_DIR).mkdir(parents=True, exist_ok=True)

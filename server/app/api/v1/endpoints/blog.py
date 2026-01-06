@@ -92,7 +92,7 @@ async def upload_blog_image(
     """
 
     # Upload and validate an image file.
-    new_feature_image_url = ImageUploadService.upload_image(file=feature_image)
+    new_feature_image_url = await ImageUploadService.upload_image(file=feature_image)
 
     # delete existing image if one exists
     if blog.feature_image:

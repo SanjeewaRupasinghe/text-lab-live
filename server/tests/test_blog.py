@@ -293,8 +293,49 @@ class TestBlogImage:
         feature_image = response.json()["feature_image"]
         assert feature_image is not None
 
-        print(f"Feature image: {feature_image}")
-
         if feature_image is not None:
             # remove testing image
             ImageUploadService.delete_image(feature_image)
+
+    def test_upload_blog_image_without_auth(self, client, create_blog):
+        """Test uploading a blog image without authentication should fail"""
+        response = client.post(
+            f"{settings.API_V1_PREFIX}/blogs/{create_blog.id}/image",
+            files={
+                "feature_image": (
+                    "test_image.webp",
+                    ImageFactory.get_sample_image_bytes(),
+                )
+            },
+        )
+        assert response.status_code == 401
+
+    def test_upload_blog_image_with_invalid_file(
+        self, client, auth_headers, create_blog
+    ):
+        """Test uploading a blog image with an invalid file should fail"""
+        response = client.post(
+            f"{settings.API_V1_PREFIX}/blogs/{create_blog.id}/image",
+            headers=auth_headers,
+            files={
+                "feature_image": (
+                    "test_image.txt",
+                    b"invalid file content",
+                )
+            },
+        )
+        assert response.status_code == 400
+
+    def test_upload_blog_image_with_wrong_blog_id(self, client, auth_headers):
+        """Test uploading a blog image with a wrong blog id should fail"""
+        response = client.post(
+            f"{settings.API_V1_PREFIX}/blogs/999/image",
+            headers=auth_headers,
+            files={
+                "feature_image": (
+                    "test_image.webp",
+                    ImageFactory.get_sample_image_bytes(),
+                )
+            },
+        )
+        assert response.status_code == 404
