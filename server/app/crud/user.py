@@ -5,7 +5,6 @@ from datetime import timedelta
 from app.schemas.user import TokenResponse, UserLogin, UserRegister
 from app.models.user import User
 from app.core.security import (
-    hash_password,
     verify_password,
     create_token,
     verify_token,
@@ -19,11 +18,8 @@ class CRUDUser:
         Create a new user in the database.
         """
 
-        # Password hashing
-        hashed_password = hash_password(obj_in.password)
-
         # Create user
-        db_user = User(email=obj_in.email, hashed_password=hashed_password)
+        db_user = User(email=obj_in.email, hashed_password=obj_in.password)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
@@ -85,9 +81,7 @@ class CRUDUser:
                 detail="Invalid refresh token",
             )
 
-        access_token_expires = timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_token(
             data={"sub": email},
             expires_delta=access_token_expires,
