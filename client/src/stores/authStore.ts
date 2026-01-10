@@ -31,7 +31,7 @@ export const useAuthStore = create<AuthState>()(
         }
 
         // Login successful
-        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("authToken", response.data.access_token);
         set({ isAuthenticated: true, username });
         return true;
       },

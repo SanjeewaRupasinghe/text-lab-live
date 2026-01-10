@@ -35,13 +35,14 @@ const BlogEditor = () => {
 
   const [formData, setFormData] = useState<CreateBlogInput>({
     title: "",
+    slug: "",
     description: "",
     status: "draft",
     featureImage: null,
     faqs: [],
     meta_title: "",
     meta_description: "",
-    meta_keywords: [],
+    meta_keywords: "",
     customJsonLd: null,
   });
 
@@ -61,6 +62,7 @@ const BlogEditor = () => {
     if (currentBlog && isEditMode) {
       setFormData({
         title: currentBlog.title,
+        slug: currentBlog.slug,
         description: currentBlog.description,
         status: currentBlog.status,
         featureImage: currentBlog.featureImage,
@@ -216,17 +218,42 @@ const BlogEditor = () => {
                   id="title"
                   value={formData.title}
                   onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, title: e.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                      slug: e.target.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/(^-|-$)/g, ""),
+                    }))
                   }
                   placeholder="Enter blog title"
                 />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Slug: /
-                  {formData.title
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, "-")
-                    .replace(/(^-|-$)/g, "")}
-                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="title">Slug *</Label>
+                <Input
+                  id="slug"
+                  value={formData.slug}
+                  // Anything can add. but while leaving manage the slug properly
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      slug: e.target.value,
+                    }))
+                  }
+                  onBlur={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      slug: e.target.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/(^-|-$)/g, ""),
+                    }))
+                  }
+                  placeholder="Enter blog slug"
+                />
               </div>
 
               <div>

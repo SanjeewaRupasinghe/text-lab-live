@@ -30,19 +30,20 @@ export interface Blog {
   faqs: FAQ[];
   meta_title: string;
   meta_description: string;
-  meta_keywords: string[];
+  meta_keywords: string;
   customJsonLd: string | null;
 }
 
 export interface CreateBlogInput {
   title: string;
+  slug: string;
   description: string;
   status: "draft" | "published";
   featureImage?: string | null;
   faqs?: FAQ[];
   meta_title: string;
   meta_description: string;
-  meta_keywords: string[];
+  meta_keywords: string;
   customJsonLd?: string | null;
 }
 
