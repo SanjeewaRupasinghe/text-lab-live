@@ -1,43 +1,51 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useBlogStore } from '@/stores/blogStore';
-import { CreateBlogInput, FAQ, GeoTag } from '@/types/blog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
-import { RichTextEditor } from '@/components/admin/RichTextEditor';
-import { ImageUpload } from '@/components/admin/ImageUpload';
-import { FAQManager } from '@/components/admin/FAQManager';
-import { ArrowLeft, Save, Eye } from 'lucide-react';
-import { toast } from 'sonner';
-import { Separator } from '@/components/ui/separator';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useBlogStore } from "@/stores/blogStore";
+import { CreateBlogInput, FAQ } from "@/types/blog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+import { FAQManager } from "@/components/admin/FAQManager";
+import { ArrowLeft, Save, Eye } from "lucide-react";
+import { toast } from "sonner";
 
 const BlogEditor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentBlog, fetchBlogById, createBlog, updateBlog, clearCurrentBlog } = useBlogStore();
+  const {
+    currentBlog,
+    fetchBlogById,
+    createBlog,
+    updateBlog,
+    clearCurrentBlog,
+  } = useBlogStore();
   const isEditMode = !!id;
 
   const [formData, setFormData] = useState<CreateBlogInput>({
-    title: '',
-    description: '',
-    status: 'draft',
+    title: "",
+    description: "",
+    status: "draft",
     featureImage: null,
     faqs: [],
-    metaTags: {
-      title: '',
-      description: '',
-      keywords: []
-    },
+    meta_title: "",
+    meta_description: "",
+    meta_keywords: [],
     customJsonLd: null,
-    geoTag: null
   });
 
-  const [keywordInput, setKeywordInput] = useState('');
+  const [keywordInput, setKeywordInput] = useState("");
   const [geoEnabled, setGeoEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -57,54 +65,55 @@ const BlogEditor = () => {
         status: currentBlog.status,
         featureImage: currentBlog.featureImage,
         faqs: currentBlog.faqs,
-        metaTags: currentBlog.metaTags,
+        meta_title: currentBlog.meta_title,
+        meta_description: currentBlog.meta_description,
+        meta_keywords: currentBlog.meta_keywords,
         customJsonLd: currentBlog.customJsonLd,
-        geoTag: currentBlog.geoTag
       });
-      setKeywordInput(currentBlog.metaTags.keywords.join(', '));
-      setGeoEnabled(!!currentBlog.geoTag);
+      // setKeywordInput(currentBlog.metaTags.keywords.join(", "));
     }
   }, [currentBlog, isEditMode]);
 
   const handleSave = async (publish: boolean = false) => {
     if (!formData.title.trim()) {
-      toast.error('Title is required');
+      toast.error("Title is required");
       return;
     }
 
     if (!formData.description.trim()) {
-      toast.error('Description is required');
+      toast.error("Description is required");
       return;
     }
 
     setSaving(true);
     try {
       const keywords = keywordInput
-        .split(',')
-        .map(k => k.trim())
-        .filter(k => k.length > 0);
+        .split(",")
+        .map((k) => k.trim())
+        .filter((k) => k.length > 0);
 
       const blogData: CreateBlogInput = {
         ...formData,
-        status: publish ? 'published' : formData.status,
-        metaTags: {
-          ...formData.metaTags!,
-          keywords
-        },
-        geoTag: geoEnabled ? formData.geoTag : null
+        status: publish ? "published" : formData.status,
+        // metaTags: {
+        //   ...formData.metaTags!,
+        //   keywords,
+        // },
       };
 
       if (isEditMode && id) {
         await updateBlog({ ...blogData, id });
-        toast.success('Blog updated successfully');
+        toast.success("Blog updated successfully");
       } else {
         await createBlog(blogData);
-        toast.success('Blog created successfully');
+        toast.success("Blog created successfully");
       }
 
-      navigate('/admin/blogs');
+      // navigate('/admin/blogs');
     } catch (error) {
-      toast.error(isEditMode ? 'Failed to update blog' : 'Failed to create blog');
+      toast.error(
+        isEditMode ? "Failed to update blog" : "Failed to create blog"
+      );
     } finally {
       setSaving(false);
     }
@@ -114,28 +123,31 @@ const BlogEditor = () => {
     const articleSchema = {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": formData.title,
-      "description": formData.metaTags?.description || '',
-      "author": {
+      headline: formData.title,
+      description: formData.meta_description || "",
+      author: {
         "@type": "Person",
-        "name": "Admin"
+        name: "Admin",
       },
-      "datePublished": new Date().toISOString(),
-      "image": formData.featureImage || ''
+      datePublished: new Date().toISOString(),
+      image: formData.featureImage || "",
     };
 
-    const faqSchema = formData.faqs && formData.faqs.length > 0 ? {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": formData.faqs.map(faq => ({
-        "@type": "Question",
-        "name": faq.question,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": faq.answer
-        }
-      }))
-    } : null;
+    const faqSchema =
+      formData.faqs && formData.faqs.length > 0
+        ? {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: formData.faqs.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: faq.answer,
+              },
+            })),
+          }
+        : null;
 
     const schemas: any[] = [articleSchema];
     if (faqSchema) schemas.push(faqSchema);
@@ -144,26 +156,33 @@ const BlogEditor = () => {
   };
 
   const autoGenerateJsonLd = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      customJsonLd: generateJsonLd()
+      customJsonLd: generateJsonLd(),
     }));
-    toast.success('JSON-LD generated');
+    toast.success("JSON-LD generated");
   };
 
   return (
     <div className="container mx-auto p-6 px-10">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/blogs')}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/admin/blogs")}
+        >
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1">
           <h1 className="text-3xl font-bold">
-            {isEditMode ? 'Edit Blog Post' : 'Create New Blog Post'}
+            {isEditMode ? "Edit Blog Post" : "Create New Blog Post"}
           </h1>
         </div>
-        <Button variant="outline" onClick={() => toast.info('Preview feature coming soon')}>
+        <Button
+          variant="outline"
+          onClick={() => toast.info("Preview feature coming soon")}
+        >
           <Eye className="w-4 h-4 mr-2" />
           Preview
         </Button>
@@ -196,11 +215,17 @@ const BlogEditor = () => {
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, title: e.target.value }))
+                  }
                   placeholder="Enter blog title"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Slug: /{formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}
+                  Slug: /
+                  {formData.title
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/(^-|-$)/g, "")}
                 </p>
               </div>
 
@@ -208,7 +233,9 @@ const BlogEditor = () => {
                 <Label>Description *</Label>
                 <RichTextEditor
                   content={formData.description}
-                  onChange={(content) => setFormData(prev => ({ ...prev, description: content }))}
+                  onChange={(content) =>
+                    setFormData((prev) => ({ ...prev, description: content }))
+                  }
                   placeholder="Write your blog content..."
                 />
               </div>
@@ -216,13 +243,16 @@ const BlogEditor = () => {
               <div className="flex items-center space-x-2">
                 <Switch
                   id="status"
-                  checked={formData.status === 'published'}
+                  checked={formData.status === "published"}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({ ...prev, status: checked ? 'published' : 'draft' }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      status: checked ? "published" : "draft",
+                    }))
                   }
                 />
                 <Label htmlFor="status">
-                  {formData.status === 'published' ? 'Published' : 'Draft'}
+                  {formData.status === "published" ? "Published" : "Draft"}
                 </Label>
               </div>
             </CardContent>
@@ -234,12 +264,16 @@ const BlogEditor = () => {
           <Card>
             <CardHeader>
               <CardTitle>Feature Image</CardTitle>
-              <CardDescription>Upload a 1000x1000px image for your blog post</CardDescription>
+              <CardDescription>
+                Upload a 1000x1000px image for your blog post
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ImageUpload
                 value={formData.featureImage}
-                onChange={(url) => setFormData(prev => ({ ...prev, featureImage: url }))}
+                onChange={(url) =>
+                  setFormData((prev) => ({ ...prev, featureImage: url }))
+                }
                 requiredDimensions={{ width: 1000, height: 1000 }}
                 maxSize={5}
               />
@@ -252,18 +286,22 @@ const BlogEditor = () => {
           <Card>
             <CardHeader>
               <CardTitle>Meta Tags</CardTitle>
-              <CardDescription>Optimize your blog for search engines</CardDescription>
+              <CardDescription>
+                Optimize your blog for search engines
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="metaTitle">Meta Title</Label>
                 <Input
                   id="metaTitle"
-                  value={formData.metaTags?.title || ''}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    metaTags: { ...prev.metaTags!, title: e.target.value }
-                  }))}
+                  value={formData.meta_title || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      meta_title: e.target.value,
+                    }))
+                  }
                   placeholder="SEO title (max 60 characters)"
                   maxLength={60}
                 />
@@ -273,11 +311,13 @@ const BlogEditor = () => {
                 <Label htmlFor="metaDescription">Meta Description</Label>
                 <Textarea
                   id="metaDescription"
-                  value={formData.metaTags?.description || ''}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    metaTags: { ...prev.metaTags!, description: e.target.value }
-                  }))}
+                  value={formData.meta_description || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      meta_description: e.target.value,
+                    }))
+                  }
                   placeholder="SEO description (max 160 characters)"
                   maxLength={160}
                   rows={3}
@@ -299,73 +339,34 @@ const BlogEditor = () => {
             </CardContent>
           </Card>
 
-          {/* GEO Tags */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Geographic Targeting</CardTitle>
-                  <CardDescription>Add location information for local SEO</CardDescription>
-                </div>
-                <Switch checked={geoEnabled} onCheckedChange={setGeoEnabled} />
-              </div>
-            </CardHeader>
-            {geoEnabled && (
-              <CardContent className="space-y-4">
-                <div>
-                  <Label>Region</Label>
-                  <Input
-                    value={formData.geoTag?.region || ''}
-                    onChange={(e) => setFormData(prev => ({
-                      ...prev,
-                      geoTag: { ...prev.geoTag!, region: e.target.value }
-                    }))}
-                    placeholder="e.g., US-CA"
-                  />
-                </div>
-                <div>
-                  <Label>Place Name</Label>
-                  <Input
-                    value={formData.geoTag?.placename || ''}
-                    onChange={(e) => setFormData(prev => ({
-                      ...prev,
-                      geoTag: { ...prev.geoTag!, placename: e.target.value }
-                    }))}
-                    placeholder="e.g., San Francisco"
-                  />
-                </div>
-                <div>
-                  <Label>Position (lat;long)</Label>
-                  <Input
-                    value={formData.geoTag?.position || ''}
-                    onChange={(e) => setFormData(prev => ({
-                      ...prev,
-                      geoTag: { ...prev.geoTag!, position: e.target.value }
-                    }))}
-                    placeholder="e.g., 37.7749;-122.4194"
-                  />
-                </div>
-              </CardContent>
-            )}
-          </Card>
-
           {/* JSON-LD */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Structured Data (JSON-LD)</CardTitle>
-                  <CardDescription>Add structured data for rich snippets</CardDescription>
+                  <CardDescription>
+                    Add structured data for rich snippets
+                  </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" onClick={autoGenerateJsonLd}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={autoGenerateJsonLd}
+                >
                   Auto Generate
                 </Button>
               </div>
             </CardHeader>
             <CardContent>
               <Textarea
-                value={formData.customJsonLd || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, customJsonLd: e.target.value }))}
+                value={formData.customJsonLd || ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    customJsonLd: e.target.value,
+                  }))
+                }
                 placeholder="Paste or edit JSON-LD schema here"
                 rows={15}
                 className="font-mono text-sm"
@@ -379,12 +380,14 @@ const BlogEditor = () => {
           <Card>
             <CardHeader>
               <CardTitle>Frequently Asked Questions</CardTitle>
-              <CardDescription>Add FAQs to enhance SEO and user experience</CardDescription>
+              <CardDescription>
+                Add FAQs to enhance SEO and user experience
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <FAQManager
                 faqs={formData.faqs || []}
-                onChange={(faqs) => setFormData(prev => ({ ...prev, faqs }))}
+                onChange={(faqs) => setFormData((prev) => ({ ...prev, faqs }))}
               />
             </CardContent>
           </Card>

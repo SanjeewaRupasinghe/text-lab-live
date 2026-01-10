@@ -21,28 +21,29 @@ export interface Blog {
   title: string;
   slug: string;
   description: string; // Rich HTML content
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   author: string;
   featureImage: string | null;
   publishedDate: string | null;
   createdAt: string;
   updatedAt: string;
-  viewCount: number;
   faqs: FAQ[];
-  metaTags: MetaTags;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string[];
   customJsonLd: string | null;
-  geoTag: GeoTag | null;
 }
 
 export interface CreateBlogInput {
   title: string;
   description: string;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   featureImage?: string | null;
   faqs?: FAQ[];
-  metaTags?: Partial<MetaTags>;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string[];
   customJsonLd?: string | null;
-  geoTag?: GeoTag | null;
 }
 
 export interface UpdateBlogInput extends Partial<CreateBlogInput> {

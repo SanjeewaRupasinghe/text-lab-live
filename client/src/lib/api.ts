@@ -170,6 +170,9 @@ export const fetchBlogBySlug = async (slug: string): Promise<Blog | null> => {
  * return api.post<Blog>('/blogs', input).then(res => res.data);
  */
 export const createBlog = async (input: CreateBlogInput): Promise<Blog> => {
+  
+  console.table(input);
+
   await simulateDelay(); // Remove in production
   
   const now = new Date().toISOString();
@@ -184,18 +187,14 @@ export const createBlog = async (input: CreateBlogInput): Promise<Blog> => {
     status: input.status,
     author: 'admin', // TODO PRODUCTION: Get from authenticated user context
     featureImage: input.featureImage || null,
-    publishedDate: input.status === 'published' ? now : null,
+    publishedDate: input.status === 'published'  ? now : null,
     createdAt: now,
     updatedAt: now,
-    viewCount: 0,
     faqs: input.faqs || [],
-    metaTags: {
-      title: input.metaTags?.title || input.title,
-      description: input.metaTags?.description || '',
-      keywords: input.metaTags?.keywords || []
-    },
-    customJsonLd: input.customJsonLd || null,
-    geoTag: input.geoTag || null
+    meta_title: input.meta_title,
+    meta_description: input.meta_description,
+    meta_keywords: input.meta_keywords,
+    customJsonLd: input.customJsonLd || null
   };
   
   blogsDatabase.push(newBlog);
@@ -244,10 +243,10 @@ export const updateBlog = async (input: UpdateBlogInput): Promise<Blog> => {
       ? new Date().toISOString() 
       : existingBlog.publishedDate,
     // Merge meta tags
-    metaTags: {
-      ...existingBlog.metaTags,
-      ...input.metaTags
-    }
+    // metaTags: {
+    //   ...existingBlog.metaTags,
+    //   ...input.metaTags
+    // }
   };
   
   blogsDatabase[index] = updatedBlog;
@@ -292,17 +291,17 @@ export const deleteBlog = async (id: string): Promise<void> => {
  * Example:
  * return api.post(`/blogs/${id}/view`).then(() => void 0);
  */
-export const incrementViewCount = async (id: string): Promise<void> => {
-  await simulateDelay(100); // Remove in production
+// export const incrementViewCount = async (id: string): Promise<void> => {
+//   await simulateDelay(100); // Remove in production
   
-  const blog = blogsDatabase.find(b => b.id === id);
-  if (blog) {
-    blog.viewCount += 1;
-  }
+//   const blog = blogsDatabase.find(b => b.id === id);
+//   if (blog) {
+//     blog.viewCount += 1;
+//   }
   
-  // TODO PRODUCTION: Uncomment this line
-  // return api.post(`/blogs/${id}/view`);
-};
+//   // TODO PRODUCTION: Uncomment this line
+//   // return api.post(`/blogs/${id}/view`);
+// };
 
 /**
  * Upload image file
