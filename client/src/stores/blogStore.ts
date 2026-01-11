@@ -126,15 +126,15 @@ export const useBlogStore = create<BlogState>((set, get) => ({
 
   incrementViewCount: async (id: string) => {
     try {
-      await api.incrementViewCount(id);
-      set((state) => ({
-        blogs: state.blogs.map(blog =>
-          blog.id === id ? { ...blog, viewCount: blog.viewCount + 1 } : blog
-        ),
-        currentBlog: state.currentBlog?.id === id
-          ? { ...state.currentBlog, viewCount: state.currentBlog.viewCount + 1 }
-          : state.currentBlog
-      }));
+      // await api.incrementViewCount(id);
+      // set((state) => ({
+      //   blogs: state.blogs.map(blog =>
+      //     blog.id === id ? { ...blog, viewCount: blog.viewCount + 1 } : blog
+      //   ),
+      //   currentBlog: state.currentBlog?.id === id
+      //     ? { ...state.currentBlog, viewCount: state.currentBlog.viewCount + 1 }
+      //     : state.currentBlog
+      // }));
     } catch (error) {
       console.error('Failed to increment view count:', error);
     }

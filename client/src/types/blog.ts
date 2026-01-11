@@ -25,8 +25,8 @@ export interface Blog {
   author: string;
   featureImage: string | null;
   published_at: string | null;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   faqs: FAQ[];
   meta_title: string;
   meta_description: string;

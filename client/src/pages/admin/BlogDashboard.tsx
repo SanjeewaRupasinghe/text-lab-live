@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useBlogStore } from '@/stores/blogStore';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useBlogStore } from "@/stores/blogStore";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -11,25 +11,31 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, MoreVertical, Eye, Edit, Trash2, Search } from 'lucide-react';
-import { CSVUploadDialog } from '@/components/admin/CSVUploadDialog';
-import { format } from 'date-fns';
-import { toast } from 'sonner';
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Plus, MoreVertical, Eye, Edit, Trash2, Search } from "lucide-react";
+import { CSVUploadDialog } from "@/components/admin/CSVUploadDialog";
+import { format } from "date-fns";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,13 +45,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 
 const BlogDashboard = () => {
   const navigate = useNavigate();
   const { blogs, isLoading, fetchBlogs, deleteBlog } = useBlogStore();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "published" | "draft"
+  >("all");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [blogToDelete, setBlogToDelete] = useState<string | null>(null);
 
@@ -53,31 +61,32 @@ const BlogDashboard = () => {
     fetchBlogs();
   }, [fetchBlogs]);
 
-  const filteredBlogs = blogs.filter(blog => {
-    const matchesSearch = 
+  const filteredBlogs = blogs.filter((blog) => {
+    const matchesSearch =
       blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       blog.author.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || blog.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "all" || blog.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const handleDelete = async () => {
     if (!blogToDelete) return;
-    
+
     try {
       await deleteBlog(blogToDelete);
-      toast.success('Blog deleted successfully');
+      toast.success("Blog deleted successfully");
       setDeleteDialogOpen(false);
       setBlogToDelete(null);
     } catch (error) {
-      toast.error('Failed to delete blog');
+      toast.error("Failed to delete blog");
     }
   };
 
   const stats = {
     total: blogs.length,
-    published: blogs.filter(b => b.status === 'published').length,
-    draft: blogs.filter(b => b.status === 'draft').length,
+    published: blogs.filter((b) => b.status === "published").length,
+    draft: blogs.filter((b) => b.status === "draft").length,
   };
 
   return (
@@ -90,7 +99,7 @@ const BlogDashboard = () => {
         </div>
         <div className="flex gap-2">
           <CSVUploadDialog />
-          <Button onClick={() => navigate('/admin/blogs/new')}>
+          <Button onClick={() => navigate("/admin/blogs/new")}>
             <Plus className="w-4 h-4 mr-2" />
             New Blog Post
           </Button>
@@ -108,13 +117,17 @@ const BlogDashboard = () => {
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Published</CardDescription>
-            <CardTitle className="text-3xl text-green-600">{stats.published}</CardTitle>
+            <CardTitle className="text-3xl text-green-600">
+              {stats.published}
+            </CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Drafts</CardDescription>
-            <CardTitle className="text-3xl text-yellow-600">{stats.draft}</CardTitle>
+            <CardTitle className="text-3xl text-yellow-600">
+              {stats.draft}
+            </CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -132,7 +145,10 @@ const BlogDashboard = () => {
                 className="pl-9"
               />
             </div>
-            <Select value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
+            <Select
+              value={statusFilter}
+              onValueChange={(v: any) => setStatusFilter(v)}
+            >
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -149,9 +165,9 @@ const BlogDashboard = () => {
             <div className="text-center py-8">Loading...</div>
           ) : filteredBlogs.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              {searchQuery || statusFilter !== 'all' 
-                ? 'No blogs found matching your filters.' 
-                : 'No blogs yet. Create your first blog post!'}
+              {searchQuery || statusFilter !== "all"
+                ? "No blogs found matching your filters."
+                : "No blogs yet. Create your first blog post!"}
             </div>
           ) : (
             <div className="rounded-md border">
@@ -171,19 +187,27 @@ const BlogDashboard = () => {
                       <TableCell className="font-medium">
                         <div>
                           <p>{blog.title}</p>
-                          <p className="text-xs text-muted-foreground">/{blog.slug}</p>
+                          <p className="text-xs text-muted-foreground">
+                            /{blog.slug}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>{blog.author}</TableCell>
                       <TableCell className="text-center">
-                        <Badge variant={blog.status === 'published' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={
+                            blog.status === "published"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {blog.status}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {blog.published_at 
-                          ? format(new Date(blog.published_at), 'MMM d, yyyy')
-                          : format(new Date(blog.createdAt), 'MMM d, yyyy')}
+                        {blog.published_at
+                          ? format(new Date(blog.published_at), "MMM d, yyyy")
+                          : format(new Date(blog.created_at), "MMM d, yyyy")}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -192,12 +216,21 @@ const BlogDashboard = () => {
                               <MoreVertical className="w-4 h-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent className="bg-white dark:bg-gray-800" align="end">
-                            <DropdownMenuItem onClick={() => navigate(`/blog/${blog.slug}`)}>
+                          <DropdownMenuContent
+                            className="bg-white dark:bg-gray-800"
+                            align="end"
+                          >
+                            <DropdownMenuItem
+                              onClick={() => navigate(`/blog/${blog.slug}`)}
+                            >
                               <Eye className="w-4 h-4 mr-2" />
                               Preview
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate(`/admin/blogs/edit/${blog.id}`)}>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                navigate(`/admin/blogs/edit/${blog.id}`)
+                              }
+                            >
                               <Edit className="w-4 h-4 mr-2" />
                               Edit
                             </DropdownMenuItem>
@@ -229,12 +262,18 @@ const BlogDashboard = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the blog post.
+              This action cannot be undone. This will permanently delete the
+              blog post.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setBlogToDelete(null)}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+            <AlertDialogCancel onClick={() => setBlogToDelete(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
