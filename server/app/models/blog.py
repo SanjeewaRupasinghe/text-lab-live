@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime
 from datetime import datetime, timezone
-from pydantic import Field
 
 from app.core.database import Base
 
@@ -11,7 +10,7 @@ class Blog(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
     description = Column(Text)
-    status: str = Field(default="draft")
+    status = Column(String(50), default="draft") 
     published_at = Column(DateTime)
     feature_image = Column(String(500))
     faqs = Column(Text)  # JSON string

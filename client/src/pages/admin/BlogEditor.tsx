@@ -38,6 +38,7 @@ const BlogEditor = () => {
     slug: "",
     description: "",
     status: "draft",
+    published_at: null,
     featureImage: null,
     faqs: [],
     meta_title: "",
@@ -65,6 +66,7 @@ const BlogEditor = () => {
         slug: currentBlog.slug,
         description: currentBlog.description,
         status: currentBlog.status,
+        published_at: currentBlog.published_at,
         featureImage: currentBlog.featureImage,
         faqs: currentBlog.faqs,
         meta_title: currentBlog.meta_title,
@@ -77,30 +79,37 @@ const BlogEditor = () => {
   }, [currentBlog, isEditMode]);
 
   const handleSave = async (publish: boolean = false) => {
+    // Validate title
     if (!formData.title.trim()) {
       toast.error("Title is required");
       return;
     }
 
+    // Validate description
     if (!formData.description.trim()) {
       toast.error("Description is required");
       return;
     }
 
+    // Validate published date
+    if (publish && !formData.published_at) {
+      console.log("Published date is required");
+      toast.error("Published date is required");
+      return;
+    } 
+    if(!publish) {
+      console.log("Setting published_at to null");
+      // if draft, set published_at to null
+      formData.published_at = null;
+    }
+
+    console.log(formData.published_at);
+
     setSaving(true);
     try {
-      const keywords = keywordInput
-        .split(",")
-        .map((k) => k.trim())
-        .filter((k) => k.length > 0);
-
       const blogData: CreateBlogInput = {
         ...formData,
         status: publish ? "published" : formData.status,
-        // metaTags: {
-        //   ...formData.metaTags!,
-        //   keywords,
-        // },
       };
 
       if (isEditMode && id) {
@@ -181,13 +190,6 @@ const BlogEditor = () => {
             {isEditMode ? "Edit Blog Post" : "Create New Blog Post"}
           </h1>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => toast.info("Preview feature coming soon")}
-        >
-          <Eye className="w-4 h-4 mr-2" />
-          Preview
-        </Button>
         <Button onClick={() => handleSave(false)} disabled={saving}>
           <Save className="w-4 h-4 mr-2" />
           Save Draft
@@ -198,9 +200,8 @@ const BlogEditor = () => {
       </div>
 
       <Tabs defaultValue="content" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="media">Media</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
         </TabsList>
@@ -281,13 +282,28 @@ const BlogEditor = () => {
                 <Label htmlFor="status">
                   {formData.status === "published" ? "Published" : "Draft"}
                 </Label>
+
+                {formData.status === "published" && (
+                  <div>
+                    <Input
+                      type="date"
+                      value={formData.published_at}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          published_at: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Media Tab */}
-        <TabsContent value="media" className="space-y-6">
+        {/* <TabsContent value="media" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Feature Image</CardTitle>
@@ -306,7 +322,7 @@ const BlogEditor = () => {
               />
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent> */}
 
         {/* SEO Tab */}
         <TabsContent value="seo" className="space-y-6">

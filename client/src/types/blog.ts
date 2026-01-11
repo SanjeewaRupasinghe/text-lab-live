@@ -24,7 +24,7 @@ export interface Blog {
   status: "draft" | "published";
   author: string;
   featureImage: string | null;
-  publishedDate: string | null;
+  published_at: string | null;
   createdAt: string;
   updatedAt: string;
   faqs: FAQ[];
@@ -39,6 +39,7 @@ export interface CreateBlogInput {
   slug: string;
   description: string;
   status: "draft" | "published";
+  published_at: string | null;
   featureImage?: string | null;
   faqs?: FAQ[];
   meta_title: string;
