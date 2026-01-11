@@ -46,6 +46,7 @@ export const useBlogStore = create<BlogState>((set, get) => ({
       const blogs = await api.fetchBlogsForAdmin();
       set({ blogs, isLoading: false });
     } catch (error) {
+      console.error(error);
       set({ 
         error: error instanceof Error ? error.message : 'Failed to fetch blogs',
         isLoading: false 
@@ -57,8 +58,11 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const blog = await api.fetchBlogById(id);
+      console.log(blog);
       set({ currentBlog: blog, isLoading: false });
     } catch (error) {
+      console.log(error);
+      
       set({ 
         error: error instanceof Error ? error.message : 'Failed to fetch blog',
         isLoading: false 
@@ -101,6 +105,7 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const updatedBlog = await api.updateBlog(input);
+      console.log(updatedBlog);
       set((state) => ({
         blogs: state.blogs.map(blog => 
           blog.id === updatedBlog.id ? updatedBlog : blog
@@ -112,6 +117,7 @@ export const useBlogStore = create<BlogState>((set, get) => ({
       }));
       return updatedBlog;
     } catch (error) {
+      console.log(error);
       set({ 
         error: error instanceof Error ? error.message : 'Failed to update blog',
         isLoading: false 

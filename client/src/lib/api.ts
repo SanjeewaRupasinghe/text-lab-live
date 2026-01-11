@@ -25,6 +25,7 @@ import axios from "axios";
 import { Blog, CreateBlogInput, UpdateBlogInput } from "@/types/blog";
 import { mockBlogs } from "@/data/mockBlogs";
 import axiosClient from "@/utilities/axiosClient";
+import { faqsToString, stringToFAQs } from "@/utilities/faqConverter";
 
 // ============= MOCK DATABASE =============
 // This simulates an in-memory database for development
@@ -109,10 +110,17 @@ export const fetchBlogs = async (): Promise<Blog[]> => {
  * Fetch all blogs
  */
 export const fetchBlogsForAdmin = async (): Promise<Blog[]> => {
-  await simulateDelay(); // Remove in production
-  // TODO PRODUCTION: Uncomment this line
-  // return api.get<Blog[]>('/blogs').then(res => res.data);
-  return [...blogsDatabase];
+  // API call
+  const response = await axiosClient.get(`/blogs/admin`);
+
+  // Check response status
+  if (response.status !== 200) {
+    return null;
+  }
+
+  // Return
+  const blogs = response.data.blogs;
+  return blogs;
 };
 
 /**
@@ -121,6 +129,7 @@ export const fetchBlogsForAdmin = async (): Promise<Blog[]> => {
 export const fetchBlogById = async (id: string): Promise<Blog | null> => {
   // API call
   const response = await axiosClient.get(`/blogs/${id}/id`);
+  console.log(response);
 
   // Check response status
   if (response.status !== 200) {
@@ -129,6 +138,9 @@ export const fetchBlogById = async (id: string): Promise<Blog | null> => {
 
   // Return
   const blog = response.data;
+  console.log(blog);
+  blog.faqs = blog.faqs ? stringToFAQs(blog.faqs) : [];
+  console.log(blog);
   return blog;
 };
 
@@ -157,7 +169,7 @@ export const createBlog = async (input: CreateBlogInput): Promise<Blog> => {
 
   const response = await axiosClient.post("/blogs", {
     ...input,
-    faqs: input.faqs?.map((faq) => JSON.stringify(faq)).join(","),
+    faqs: faqsToString(input.faqs),
   });
 
   if (response.status !== 200) {
@@ -172,42 +184,23 @@ export const createBlog = async (input: CreateBlogInput): Promise<Blog> => {
  * Update existing blog post
  */
 export const updateBlog = async (input: UpdateBlogInput): Promise<Blog> => {
-  await simulateDelay(); // Remove in production
+  console.log(input);
+  console.log("updateBlog");
 
-  const index = blogsDatabase.findIndex((blog) => blog.id === input.id);
-  if (index === -1) {
-    throw new Error("Blog not found");
+  const response = await axiosClient.put(`/blogs/${input.id}`, {
+    ...input,
+    faqs: faqsToString(input.faqs),
+  });
+
+  console.log(response);
+
+  if (response.status !== 200) {
+    throw new Error("Failed to update blog");
   }
 
-  const existingBlog = blogsDatabase[index];
-  const wasPublished = existingBlog.status === "published";
-  const isNowPublished = input.status === "published";
-
-  // Regenerate slug if title changed
-  const slug = input.title ? generateSlug(input.title) : existingBlog.slug;
-
-  const updatedBlog: Blog = {
-    ...existingBlog,
-    ...input,
-    slug,
-    updated_at: new Date().toISOString(),
-    // Set publishedDate when first published
-    published_at:
-      !wasPublished && isNowPublished
-        ? new Date().toISOString()
-        : existingBlog.published_at,
-    // Merge meta tags
-    // metaTags: {
-    //   ...existingBlog.metaTags,
-    //   ...input.metaTags
-    // }
-  };
-
-  blogsDatabase[index] = updatedBlog;
-
-  // TODO PRODUCTION: Uncomment this line
-  // return api.put<Blog>(`/blogs/${input.id}`, input).then(res => res.data);
-  return updatedBlog;
+  const blog = response.data;
+  blog.faqs = blog.faqs ? stringToFAQs(blog.faqs) : [];
+  return blog;
 };
 
 /**

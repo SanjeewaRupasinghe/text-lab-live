@@ -34,7 +34,6 @@ import {
 } from "@/components/ui/card";
 import { Plus, MoreVertical, Eye, Edit, Trash2, Search } from "lucide-react";
 import { CSVUploadDialog } from "@/components/admin/CSVUploadDialog";
-import { format } from "date-fns";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -62,9 +61,9 @@ const BlogDashboard = () => {
   }, [fetchBlogsForAdmin]);
 
   const filteredBlogs = blogs.filter((blog) => {
-    const matchesSearch =
-      blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.author.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = blog.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     const matchesStatus =
       statusFilter === "all" || blog.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -205,9 +204,9 @@ const BlogDashboard = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {/* {blog.published_at
-                          ? format(new Date(blog.published_at), "MMM d, yyyy")
-                          : format(new Date(blog.created_at), "MMM d, yyyy")} */}
+                        {blog.published_at
+                          ? new Date(blog.published_at).toLocaleDateString()
+                          : new Date(blog.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>

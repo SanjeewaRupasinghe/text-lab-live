@@ -48,10 +48,10 @@ const BlogEditor = () => {
   });
 
   const [keywordInput, setKeywordInput] = useState("");
-  const [geoEnabled, setGeoEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    console.log(isEditMode, id);
     if (isEditMode && id) {
       fetchBlogById(id);
     } else {
@@ -66,7 +66,9 @@ const BlogEditor = () => {
         slug: currentBlog.slug,
         description: currentBlog.description,
         status: currentBlog.status,
-        published_at: currentBlog.published_at,
+        published_at: currentBlog.published_at
+          ? new Date(currentBlog.published_at).toLocaleDateString()
+          : null,
         featureImage: currentBlog.featureImage,
         faqs: currentBlog.faqs,
         meta_title: currentBlog.meta_title,
@@ -74,6 +76,7 @@ const BlogEditor = () => {
         meta_keywords: currentBlog.meta_keywords,
         custom_json_ld: currentBlog.custom_json_ld,
       });
+      console.log("formData", formData);
     }
   }, [currentBlog, isEditMode]);
 
@@ -94,8 +97,8 @@ const BlogEditor = () => {
     if (publish && !formData.published_at) {
       toast.error("Published date is required");
       return;
-    } 
-    if(!publish) {
+    }
+    if (!publish) {
       // if draft, set published_at to null
       formData.published_at = null;
     }
