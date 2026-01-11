@@ -16,7 +16,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
-import { ImageUpload } from "@/components/admin/ImageUpload";
 import { FAQManager } from "@/components/admin/FAQManager";
 import { ArrowLeft, Save, Eye } from "lucide-react";
 import { toast } from "sonner";
@@ -300,27 +299,7 @@ const BlogEditor = () => {
           </Card>
         </TabsContent>
 
-        {/* Media Tab */}
-        {/* <TabsContent value="media" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Feature Image</CardTitle>
-              <CardDescription>
-                Upload a 1000x1000px image for your blog post
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ImageUpload
-                value={formData.featureImage}
-                onChange={(url) =>
-                  setFormData((prev) => ({ ...prev, featureImage: url }))
-                }
-                requiredDimensions={{ width: 1000, height: 1000 }}
-                maxSize={5}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent> */}
+        
 
         {/* SEO Tab */}
         <TabsContent value="seo" className="space-y-6">

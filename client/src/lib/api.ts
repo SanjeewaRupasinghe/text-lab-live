@@ -184,9 +184,6 @@ export const createBlog = async (input: CreateBlogInput): Promise<Blog> => {
  * Update existing blog post
  */
 export const updateBlog = async (input: UpdateBlogInput): Promise<Blog> => {
-  console.log(input);
-  console.log("updateBlog");
-
   const response = await axiosClient.put(`/blogs/${input.id}`, {
     ...input,
     faqs: faqsToString(input.faqs),
@@ -205,23 +202,31 @@ export const updateBlog = async (input: UpdateBlogInput): Promise<Blog> => {
 
 /**
  * Delete blog post
- *
- * MOCK IMPLEMENTATION:
- * Removes blog from blogsDatabase
- *
- * PRODUCTION IMPLEMENTATION:
- * DELETE /api/blogs/:id
- *
- * Example:
- * return api.delete(`/blogs/${id}`).then(() => void 0);
  */
-export const deleteBlog = async (id: string): Promise<void> => {
-  await simulateDelay(); // Remove in production
+export const imageUploading = async (id: string, file: File): Promise<void> => {
+  
+  console.log(id, file);
 
-  blogsDatabase = blogsDatabase.filter((blog) => blog.id !== id);
+  const response = await axiosClient.post(`/blogs/${id}/image`, {
+    feature_image: file,
+  });
 
-  // TODO PRODUCTION: Uncomment this line
-  // return api.delete(`/blogs/${id}`);
+  console.log(response);
+
+  // if (response.status !== 200) {
+  //   throw new Error("Failed to update blog");
+  // }
+
+  // const blog = response.data;
+  // blog.faqs = blog.faqs ? stringToFAQs(blog.faqs) : [];
+  // return blog;
+
+  // await simulateDelay(); // Remove in production
+
+  // blogsDatabase = blogsDatabase.filter((blog) => blog.id !== id);
+
+  // // TODO PRODUCTION: Uncomment this line
+  // // return api.delete(`/blogs/${id}`);
 };
 
 /**

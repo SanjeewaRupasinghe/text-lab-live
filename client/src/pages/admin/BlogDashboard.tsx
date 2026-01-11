@@ -32,7 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, MoreVertical, Eye, Edit, Trash2, Search } from "lucide-react";
+import { Plus, MoreVertical, Eye, Edit, Trash2, Image, Search } from "lucide-react";
 import { CSVUploadDialog } from "@/components/admin/CSVUploadDialog";
 import { toast } from "sonner";
 import {
@@ -45,16 +45,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 const BlogDashboard = () => {
   const navigate = useNavigate();
-  const { blogs, isLoading, fetchBlogsForAdmin, deleteBlog } = useBlogStore();
+  const { blogs, isLoading, fetchBlogsForAdmin, imageUploading } = useBlogStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "published" | "draft"
   >("all");
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [blogToDelete, setBlogToDelete] = useState<string | null>(null);
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [blogToImage, setBlogToImage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchBlogsForAdmin();
@@ -69,16 +70,16 @@ const BlogDashboard = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const handleDelete = async () => {
-    if (!blogToDelete) return;
+  const handleUpload = async () => {
+    if (!blogToImage) return;
 
     try {
-      await deleteBlog(blogToDelete);
-      toast.success("Blog deleted successfully");
-      setDeleteDialogOpen(false);
-      setBlogToDelete(null);
+      await imageUploading(blogToImage, new File([], ""));
+      toast.success("Image uploaded successfully");
+      setImageDialogOpen(false);
+      setBlogToImage(null);
     } catch (error) {
-      toast.error("Failed to delete blog");
+      toast.error("Failed to upload image");
     }
   };
 
@@ -235,13 +236,12 @@ const BlogDashboard = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
-                                setBlogToDelete(blog.id);
-                                setDeleteDialogOpen(true);
+                                setBlogToImage(blog.id);
+                                setImageDialogOpen(true);
                               }}
-                              className="text-destructive"
                             >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              Delete
+                              <Image className="w-4 h-4 mr-2" />
+                              Image
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -256,24 +256,31 @@ const BlogDashboard = () => {
       </Card>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+      <AlertDialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
+        <AlertDialogContent className="max-w-2xl overflow-y-auto">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Feature Image</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              blog post.
+              Upload a 1000x1000px image for your blog post
             </AlertDialogDescription>
+
+            {/* Media Tab */}
+            <ImageUpload
+              value={blogToImage}
+              onChange={(url) => setBlogToImage(url)}
+              requiredDimensions={{ width: 1000, height: 1000 }}
+              maxSize={5}
+            />
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setBlogToDelete(null)}>
+            <AlertDialogCancel onClick={() => setImageDialogOpen(false)}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground"
+              onClick={handleUpload}
+              className="bg-primary text-primary-foreground"
             >
-              Delete
+              Upload
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -15,7 +15,7 @@ interface BlogState {
   fetchBlogBySlug: (slug: string) => Promise<void>;
   createBlog: (input: CreateBlogInput) => Promise<Blog>;
   updateBlog: (input: UpdateBlogInput) => Promise<Blog>;
-  deleteBlog: (id: string) => Promise<void>;
+  imageUploading: (id: string, file: File) => Promise<void>;
   incrementViewCount: (id: string) => Promise<void>;
   clearCurrentBlog: () => void;
   clearError: () => void;
@@ -126,16 +126,17 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     }
   },
 
-  deleteBlog: async (id: string) => {
+  imageUploading: async (id: string, file: File) => {
     set({ isLoading: true, error: null });
     try {
-      await api.deleteBlog(id);
+      await api.imageUploading(id, file);
       set((state) => ({
-        blogs: state.blogs.filter(blog => blog.id !== id),
-        currentBlog: state.currentBlog?.id === id ? null : state.currentBlog,
+        // blogs: state.blogs.filter(blog => blog.id !== id),
+        // currentBlog: state.currentBlog?.id === id ? null : state.currentBlog,
         isLoading: false
       }));
     } catch (error) {
+      console.log(error);
       set({ 
         error: error instanceof Error ? error.message : 'Failed to delete blog',
         isLoading: false 
