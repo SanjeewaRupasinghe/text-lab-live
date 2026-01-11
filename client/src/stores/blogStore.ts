@@ -10,6 +10,7 @@ interface BlogState {
   
   // Actions
   fetchBlogs: () => Promise<void>;
+  fetchBlogsForAdmin: () => Promise<void>;
   fetchBlogById: (id: string) => Promise<void>;
   fetchBlogBySlug: (slug: string) => Promise<void>;
   createBlog: (input: CreateBlogInput) => Promise<Blog>;
@@ -30,6 +31,19 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const blogs = await api.fetchBlogs();
+      set({ blogs, isLoading: false });
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to fetch blogs',
+        isLoading: false 
+      });
+    }
+  },
+
+  fetchBlogsForAdmin: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const blogs = await api.fetchBlogsForAdmin();
       set({ blogs, isLoading: false });
     } catch (error) {
       set({ 

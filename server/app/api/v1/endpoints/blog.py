@@ -42,6 +42,18 @@ def get_blogs(db: Session = Depends(get_db)):
     return {"blogs": blogs, "total": total}
 
 
+@router.get("/admin", response_model=BlogList)
+def get_blogs_for_admin(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),  # Authenticated user
+):
+    """
+    Get all blog posts for admin.
+    """
+    blogs, total = blog_crud.get_all_for_admin(db=db)
+    return {"blogs": blogs, "total": total}
+
+
 @router.get("/{blog_id}/id", response_model=BlogResponse)
 def get_blog_by_id(
     blog: Blog = Depends(get_blog_by_id_or_404),

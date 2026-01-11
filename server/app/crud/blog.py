@@ -50,6 +50,14 @@ class CRUDBlog:
         total = len(blogs)
         return blogs, total
 
+    def get_all_for_admin(self, db: Session) -> tuple[list[Blog], int]:
+        """
+        Get all blog posts for admin.
+        """
+        blogs = db.query(Blog).all()
+        total = len(blogs)
+        return blogs, total
+
     def update(self, db: Session, blog_db: Blog, blog_in: BlogCreate) -> Blog | None:
         """
         Update a blog post.

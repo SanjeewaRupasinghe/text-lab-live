@@ -97,21 +97,18 @@ const simulateDelay = (ms: number = 500) =>
 
 /**
  * Fetch all blogs
- *
- * MOCK IMPLEMENTATION:
- * Returns all blogs from in-memory blogsDatabase
- *
- * PRODUCTION IMPLEMENTATION:
- * GET /api/blogs
- * Optional query params: ?status=published&sort=publishedDate&order=desc
- *
- * Example:
- * const response = await api.get<Blog[]>('/blogs', {
- *   params: { status: 'published', sort: 'publishedDate', order: 'desc' }
- * });
- * return response.data;
  */
 export const fetchBlogs = async (): Promise<Blog[]> => {
+  await simulateDelay(); // Remove in production
+  // TODO PRODUCTION: Uncomment this line
+  // return api.get<Blog[]>('/blogs').then(res => res.data);
+  return [...blogsDatabase];
+};
+
+/**
+ * Fetch all blogs
+ */
+export const fetchBlogsForAdmin = async (): Promise<Blog[]> => {
   await simulateDelay(); // Remove in production
   // TODO PRODUCTION: Uncomment this line
   // return api.get<Blog[]>('/blogs').then(res => res.data);

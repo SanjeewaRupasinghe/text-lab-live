@@ -49,7 +49,7 @@ import {
 
 const BlogDashboard = () => {
   const navigate = useNavigate();
-  const { blogs, isLoading, fetchBlogs, deleteBlog } = useBlogStore();
+  const { blogs, isLoading, fetchBlogsForAdmin, deleteBlog } = useBlogStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "published" | "draft"
@@ -58,8 +58,8 @@ const BlogDashboard = () => {
   const [blogToDelete, setBlogToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchBlogs();
-  }, [fetchBlogs]);
+    fetchBlogsForAdmin();
+  }, [fetchBlogsForAdmin]);
 
   const filteredBlogs = blogs.filter((blog) => {
     const matchesSearch =
@@ -205,9 +205,9 @@ const BlogDashboard = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {blog.published_at
+                        {/* {blog.published_at
                           ? format(new Date(blog.published_at), "MMM d, yyyy")
-                          : format(new Date(blog.created_at), "MMM d, yyyy")}
+                          : format(new Date(blog.created_at), "MMM d, yyyy")} */}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
