@@ -67,7 +67,7 @@ const BlogEditor = () => {
         description: currentBlog.description,
         status: currentBlog.status,
         published_at: currentBlog.published_at
-          ? new Date(currentBlog.published_at).toLocaleDateString()
+          ? new Date(currentBlog.published_at).toISOString().split('T')[0]
           : null,
         featureImage: currentBlog.featureImage,
         faqs: currentBlog.faqs,
@@ -76,7 +76,7 @@ const BlogEditor = () => {
         meta_keywords: currentBlog.meta_keywords,
         custom_json_ld: currentBlog.custom_json_ld,
       });
-      console.log("formData", formData);
+      console.log(new Date(currentBlog.published_at).toLocaleDateString());
     }
   }, [currentBlog, isEditMode]);
 
