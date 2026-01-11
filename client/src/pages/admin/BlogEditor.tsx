@@ -44,7 +44,7 @@ const BlogEditor = () => {
     meta_title: "",
     meta_description: "",
     meta_keywords: "",
-    customJsonLd: null,
+    custom_json_ld: null,
   });
 
   const [keywordInput, setKeywordInput] = useState("");
@@ -72,9 +72,8 @@ const BlogEditor = () => {
         meta_title: currentBlog.meta_title,
         meta_description: currentBlog.meta_description,
         meta_keywords: currentBlog.meta_keywords,
-        customJsonLd: currentBlog.customJsonLd,
+        custom_json_ld: currentBlog.custom_json_ld,
       });
-      // setKeywordInput(currentBlog.metaTags.keywords.join(", "));
     }
   }, [currentBlog, isEditMode]);
 
@@ -93,17 +92,13 @@ const BlogEditor = () => {
 
     // Validate published date
     if (publish && !formData.published_at) {
-      console.log("Published date is required");
       toast.error("Published date is required");
       return;
     } 
     if(!publish) {
-      console.log("Setting published_at to null");
       // if draft, set published_at to null
       formData.published_at = null;
     }
-
-    console.log(formData.published_at);
 
     setSaving(true);
     try {
@@ -169,7 +164,7 @@ const BlogEditor = () => {
   const autoGenerateJsonLd = () => {
     setFormData((prev) => ({
       ...prev,
-      customJsonLd: generateJsonLd(),
+      custom_json_ld: generateJsonLd(),
     }));
     toast.success("JSON-LD generated");
   };
@@ -403,11 +398,11 @@ const BlogEditor = () => {
             </CardHeader>
             <CardContent>
               <Textarea
-                value={formData.customJsonLd || ""}
+                value={formData.custom_json_ld || ""}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    customJsonLd: e.target.value,
+                    custom_json_ld: e.target.value,
                   }))
                 }
                 placeholder="Paste or edit JSON-LD schema here"

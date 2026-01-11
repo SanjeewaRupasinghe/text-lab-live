@@ -78,11 +78,10 @@ const BlogDashboard = () => {
     total: blogs.length,
     published: blogs.filter(b => b.status === 'published').length,
     draft: blogs.filter(b => b.status === 'draft').length,
-    totalViews: blogs.reduce((sum, b) => sum + b.viewCount, 0),
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 px-8 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -99,7 +98,7 @@ const BlogDashboard = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Total Posts</CardDescription>
@@ -116,12 +115,6 @@ const BlogDashboard = () => {
           <CardHeader className="pb-3">
             <CardDescription>Drafts</CardDescription>
             <CardTitle className="text-3xl text-yellow-600">{stats.draft}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-3">
-            <CardDescription>Total Views</CardDescription>
-            <CardTitle className="text-3xl">{stats.totalViews.toLocaleString()}</CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -167,8 +160,7 @@ const BlogDashboard = () => {
                   <TableRow>
                     <TableHead>Title</TableHead>
                     <TableHead>Author</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Views</TableHead>
+                    <TableHead className="text-center">Status</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
@@ -183,15 +175,14 @@ const BlogDashboard = () => {
                         </div>
                       </TableCell>
                       <TableCell>{blog.author}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <Badge variant={blog.status === 'published' ? 'default' : 'secondary'}>
                           {blog.status}
                         </Badge>
                       </TableCell>
-                      <TableCell>{blog.viewCount.toLocaleString()}</TableCell>
                       <TableCell>
-                        {blog.publishedDate 
-                          ? format(new Date(blog.publishedDate), 'MMM d, yyyy')
+                        {blog.published_at 
+                          ? format(new Date(blog.published_at), 'MMM d, yyyy')
                           : format(new Date(blog.createdAt), 'MMM d, yyyy')}
                       </TableCell>
                       <TableCell>
@@ -201,7 +192,7 @@ const BlogDashboard = () => {
                               <MoreVertical className="w-4 h-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent className="bg-white dark:bg-gray-800" align="end">
                             <DropdownMenuItem onClick={() => navigate(`/blog/${blog.slug}`)}>
                               <Eye className="w-4 h-4 mr-2" />
                               Preview

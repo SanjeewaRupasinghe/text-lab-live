@@ -120,26 +120,24 @@ export const fetchBlogs = async (): Promise<Blog[]> => {
 
 /**
  * Fetch single blog by ID
- *
- * MOCK IMPLEMENTATION:
- * Searches blogsDatabase for matching ID
- *
- * PRODUCTION IMPLEMENTATION:
- * GET /api/blogs/:id
- *
- * Example:
- * return api.get<Blog>(`/blogs/${id}`).then(res => res.data);
  */
 export const fetchBlogById = async (id: string): Promise<Blog | null> => {
-  await simulateDelay(); // Remove in production
-  // TODO PRODUCTION: Uncomment this line
-  // return api.get<Blog>(`/blogs/${id}`).then(res => res.data);
-  return blogsDatabase.find((blog) => blog.id === id) || null;
+  // API call
+  const response = await axiosClient.get(`/blogs/${id}/id`);
+
+  // Check response status
+  if (response.status !== 200) {
+    return null;
+  }
+
+  // Return
+  const blog = response.data;
+  return blog;
 };
 
 /**
  * Fetch single blog by slug (for public blog view)
- *
+
  * MOCK IMPLEMENTATION:
  * Searches blogsDatabase for matching slug
  *

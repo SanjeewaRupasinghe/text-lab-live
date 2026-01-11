@@ -31,7 +31,7 @@ export interface Blog {
   meta_title: string;
   meta_description: string;
   meta_keywords: string;
-  customJsonLd: string | null;
+  custom_json_ld: string | null;
 }
 
 export interface CreateBlogInput {
@@ -45,7 +45,7 @@ export interface CreateBlogInput {
   meta_title: string;
   meta_description: string;
   meta_keywords: string;
-  customJsonLd?: string | null;
+  custom_json_ld?: string | null;
 }
 
 export interface UpdateBlogInput extends Partial<CreateBlogInput> {
